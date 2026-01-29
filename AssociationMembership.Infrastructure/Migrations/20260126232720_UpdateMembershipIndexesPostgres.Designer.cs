@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AssociationMembership.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260121173501_UpdateMembershipIndexes")]
-    partial class UpdateMembershipIndexes
+    [Migration("20260126232720_UpdateMembershipIndexesPostgres")]
+    partial class UpdateMembershipIndexesPostgres
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -155,7 +155,7 @@ namespace AssociationMembership.Infrastructure.Migrations
 
                     b.HasIndex("TenantGroupId", "IdentityNumber")
                         .IsUnique()
-                        .HasFilter("[IsDeleted] = 0");
+                        .HasFilter("\"IsDeleted\" = false");
 
                     b.ToTable("Memberships", (string)null);
                 });

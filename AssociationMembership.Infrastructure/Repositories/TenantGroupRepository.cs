@@ -1,6 +1,7 @@
 ﻿using AssociationMembership.Domain.Common.Interfaces.Repositories;
 using AssociationMembership.Domain.Entities;
 using AssociationMembership.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,11 @@ namespace AssociationMembership.Infrastructure.Repositories
         {
         }
 
-        public Task<IEnumerable<TenantGroup>> GetGroupsByTenantAsync(int tenantId)
+        public async Task<IEnumerable<TenantGroup>> GetGroupsByTenantAsync(int tenantId)
         {
-            throw new NotImplementedException();
+            return await _context.Set<TenantGroup>()
+                .Where(g => g.TenantId == tenantId && !g.IsDeleted)
+                .ToListAsync();
         }
     }
 }

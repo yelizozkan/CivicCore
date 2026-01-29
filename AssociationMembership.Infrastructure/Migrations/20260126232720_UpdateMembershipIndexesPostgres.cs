@@ -5,19 +5,11 @@
 namespace AssociationMembership.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateMembershipIndexes : Migration
+    public partial class UpdateMembershipIndexesPostgres : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "IX_Memberships_IdentityNumber",
-                table: "Memberships");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Memberships_MobilePhone",
-                table: "Memberships");
-
             migrationBuilder.DropIndex(
                 name: "IX_Memberships_TenantGroupId_IdentityNumber",
                 table: "Memberships");
@@ -27,7 +19,7 @@ namespace AssociationMembership.Infrastructure.Migrations
                 table: "Memberships",
                 columns: new[] { "TenantGroupId", "IdentityNumber" },
                 unique: true,
-                filter: "[IsDeleted] = 0");
+                filter: "\"IsDeleted\" = false");
         }
 
         /// <inheritdoc />
@@ -38,22 +30,11 @@ namespace AssociationMembership.Infrastructure.Migrations
                 table: "Memberships");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Memberships_IdentityNumber",
-                table: "Memberships",
-                column: "IdentityNumber",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Memberships_MobilePhone",
-                table: "Memberships",
-                column: "MobilePhone",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Memberships_TenantGroupId_IdentityNumber",
                 table: "Memberships",
                 columns: new[] { "TenantGroupId", "IdentityNumber" },
-                unique: true);
+                unique: true,
+                filter: "[IsDeleted] = 0");
         }
     }
 }

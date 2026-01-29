@@ -3,6 +3,8 @@ using AssociationMembership.Application.DTOs.Auth;
 using AssociationMembership.Application.Features.Auth.Commands;
 using AssociationMembership.Application.Features.Memberships.Dtos;
 using AssociationMembership.Application.Features.Roles.Commands;
+using AssociationMembership.Application.Features.Tenant.Dtos;
+using AssociationMembership.Application.Features.TenantGroup.Dtos;
 using AssociationMembership.Application.Features.Users.Commands;
 using AssociationMembership.Domain.Common.Enums;
 using AssociationMembership.Domain.Entities;
@@ -163,7 +165,30 @@ namespace AssociationMembership.Application.Mappings
                     opt => opt.MapFrom(src => src.Tracking != null ? src.Tracking.Status : MembershipStatus.Pending))
                 .ForMember(dest => dest.ApprovedDate,
                     opt => opt.MapFrom(src => src.Tracking != null ? src.Tracking.ApprovedDate : null));
-        
+
+
+            // Tenant Mappings
+            CreateMap<Tenant, TenantDto>();
+            CreateMap<Tenant, TenantWithGroupsDto>();
+            CreateMap<CreateTenantDto, Tenant>();
+            CreateMap<UpdateTenantDto, Tenant>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Code, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.TenantGroups, opt => opt.Ignore());
+
+            // TenantGroup Mappings
+            CreateMap<TenantGroup, TenantGroupDto>();
+            CreateMap<CreateTenantGroupDto, TenantGroup>();
+            CreateMap<UpdateTenantGroupDto, TenantGroup>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.TenantId, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
+                .ForMember(dest => dest.Tenant, opt => opt.Ignore())
+                .ForMember(dest => dest.Memberships, opt => opt.Ignore());
+
         }
     }
 } 

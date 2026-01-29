@@ -120,7 +120,7 @@ namespace AssociationMembership.Infrastructure.Persistence.EntityConfigurations
 
             builder.HasIndex(m => new { m.TenantGroupId, m.IdentityNumber })
                    .IsUnique()
-                   .HasFilter("[IsDeleted] = 0"); 
+                   .HasFilter("\"IsDeleted\" = false");
 
         }
     }

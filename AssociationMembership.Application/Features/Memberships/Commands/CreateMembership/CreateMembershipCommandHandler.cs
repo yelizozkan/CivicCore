@@ -62,6 +62,12 @@ namespace AssociationMembership.Application.Features.Memberships.Commands.Create
             membership.ConsentAcceptedDate = DateTime.UtcNow;
 
 
+            if (membership.BirthDate.Kind == DateTimeKind.Unspecified)
+            {
+                membership.BirthDate = DateTime.SpecifyKind(membership.BirthDate, DateTimeKind.Utc);
+            }
+
+
             membership.Tracking = new MembershipTracking
             {
                 Status = MembershipStatus.Pending,

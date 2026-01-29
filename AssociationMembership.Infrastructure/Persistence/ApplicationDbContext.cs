@@ -66,7 +66,6 @@ namespace AssociationMembership.Infrastructure.Data
                         entry.Entity.CreatedBy = _currentUserService?.UserId;
                         entry.Entity.CreatedDate = DateTime.UtcNow;
                         break;
-
                     case EntityState.Modified:
                         entry.Entity.UpdatedBy = _currentUserService?.UserId;
                         entry.Entity.UpdatedDate = DateTime.UtcNow;
@@ -81,14 +80,22 @@ namespace AssociationMembership.Infrastructure.Data
                     case EntityState.Added:
                         entry.Entity.CreatedDate = DateTime.UtcNow;
                         break;
-
                     case EntityState.Modified:
                         entry.Entity.UpdatedDate = DateTime.UtcNow;
                         break;
                 }
             }
 
-            return await base.SaveChangesAsync(cancellationToken);
+            try
+            {
+                return await base.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException ex)
+            {
+                // Gerçek hatayý görmek için
+                var innerMessage = ex.InnerException?.Message ?? ex.Message;
+                throw new Exception($"Database Error: {innerMessage}", ex);
+            }
         }
     }
 } 

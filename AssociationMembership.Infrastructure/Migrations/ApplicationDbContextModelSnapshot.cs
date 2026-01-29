@@ -152,7 +152,7 @@ namespace AssociationMembership.Infrastructure.Migrations
 
                     b.HasIndex("TenantGroupId", "IdentityNumber")
                         .IsUnique()
-                        .HasFilter("[IsDeleted] = 0");
+                        .HasFilter("\"IsDeleted\" = false");
 
                     b.ToTable("Memberships", (string)null);
                 });
