@@ -1,11 +1,14 @@
-# 🚀 Kickstart Template
+# 🏛️ Association Management System
 
-Bu template ile hızlıca .NET Web API + Nuxt.js projesi oluşturabilirsiniz.
+Association Management System, dernekler ve sivil toplum kuruluşları için geliştirilmiş
+modern bir **üyelik ve organizasyon yönetim platformudur**.
+
+.NET Web API + Nuxt.js mimarisi ile geliştirilmiştir.
 
 ## 📁 Proje Yapısı
 
 ```
-Kickstart/
+CivicCore/
 ├── backend/                 # .NET Web API
 │   ├── AssociationMembership.API/
 │   ├── AssociationMembership.Application/
@@ -16,27 +19,34 @@ Kickstart/
 │   ├── package.json
 │   ├── nuxt.config.ts
 │   └── ...
-└── auto-setup.bat         # 🎯 Tek tıkla otomatik kurulum
+└── README.md         
 ```
 
-## 🎯 Kullanım (Süper Kolay!)
+## 🎯 Amaç
 
-### 1. Template'i Kullan
-- GitHub'da **"Use this template"** butonuna tıkla
-- Yeni repository adını belirle
-- Repository'yi clone et
+### Dernek ve organizasyonların;
+- Üyelik yönetimini  
+- Organizasyon yapısını  
+- Yetkilendirme süreçlerini  
+- Rol ve izin sistemlerini  
+- Alt birim yapılarını
+  tek bir sistem üzerinden yönetmesini sağlamak.
 
-### 2. Tek Tıkla Kurulum ⚡
-1. **auto-setup.bat** dosyasına **çift tıkla**
-2. Proje adını gir (örnek: `MyAwesomeProject`)
-3. Enter'a bas
-4. **Bitir! 🎉**
+## 🧱 Temel Varlıklar (Entities)
 
-Bu kadar basit! Hiç komut yazmanıza gerek yok.
+- User  
+- Tenant  
+- TenantGroup  
+- Role  
+- Permission  
+- UserRole  
+- RolePermission  
+- Membership  
+- MembershipTracking  
+- RefreshToken  
 
 ## 🛠 Geliştirme
 
-Kurulum bittikten sonra:
 
 ### Backend (.NET Web API)
 ```bash
@@ -54,56 +64,8 @@ npm run dev
 
 ## ✨ Özellikler
 
-- **⚡ Tek tıkla kurulum** - auto-setup.bat ile 3 saniyede hazır
 - **🏗️ Clean Architecture** yapısı
 - **🔐 JWT Authentication** hazır
 - **🗄️ Entity Framework** entegrasyonu
 - **⚡ Nuxt.js 3** modern frontend
-- **🔄 Otomatik dosya/klasör değiştirme**
-- **🧹 Otomatik temizlik** (setup dosyası kendini siler)
-- **❌ Komut satırı gerektirmez**
 
-## 📝 Kurulum Sonrası Ne Olur?
-
-- ✅ Tüm `AssociationMembership` placeholder'ları değişir
-- ✅ Dosya ve klasör isimleri güncellenir
-- ✅ Namespace'ler otomatik düzenlenir
-- ✅ Package.json güncellenir
-- ✅ Setup dosyası kendini siler
-- ✅ Proje geliştirmeye hazır!
-
-## 🎭 Örnek Projeler
-
-Bu template ile oluşturulabilecek projeler:
-- **E-ticaret siteleri**
-- **Blog platformları**
-- **CRM sistemleri**
-- **API servisleri**
-- **Admin panelleri**
-- **SaaS uygulamaları**
-
-## 🚨 Sistem Gereksinimleri
-
-- Windows (auto-setup.bat için)
-- .NET 8.0+
-- Node.js 18+
-- PowerShell (Windows'ta varsayılan)
-
-## ❓ Sorun Giderme
-
-**Setup çalışmıyor mu?**
-- Klasör iznini kontrol edin
-- Antivürüs programını geçici kapatın
-- PowerShell ExecutionPolicy sorun çıkarabilir (normalde otomatik çözülür)
-
-## 🤝 Katkıda Bulunma
-
-Bu template'i geliştirmek için pull request gönderebilirsiniz!
-
-## 📞 Destek
-
-Sorun yaşıyorsanız issue açın, yardımcı olmaya çalışırız.
-
----
-
-**🚀 Happy Coding! Artık proje kurmak çok kolay! ✨**
