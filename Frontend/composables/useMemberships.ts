@@ -1,4 +1,4 @@
-import type { ApiResponse } from '~/types'
+import { MembershipStatus, type Membership, type ApiResponse } from '~/types'
 
 //#region API Endpoints
 const MEMBERSHIP_ENDPOINTS = {
@@ -43,17 +43,6 @@ export interface CreateMembershipCommand {
     membership: CreateMembershipDto
 }
 
-export interface MembershipDto {
-    id: number
-    firstName: string
-    lastName: string
-    email: string
-    mobilePhone: string
-    status: MembershipStatus
-    createdAt: string
-    updatedAt?: string
-}
-
 export interface SlugResolveResponse {
     type: 'tenant' | 'group'
     tenantId: number
@@ -61,15 +50,6 @@ export interface SlugResolveResponse {
     name: string
     tenantName: string
     slug: string
-}
-
-export enum MembershipStatus {
-    Pending = 'Pending',
-    PreApproved = 'PreApproved',
-    Approved = 'Approved',
-    Rejected = 'Rejected',
-    Suspended = 'Suspended',
-    Cancelled = 'Cancelled'
 }
 
 export interface UpdateMembershipStatusDto {
@@ -114,7 +94,7 @@ export const useMemberships = () => {
      * Create new membership application
      * Public endpoint - No authentication required
      */
-    const createMembership = async (data: CreateMembershipDto, tenantGroupId: number): Promise<MembershipDto> => {
+    const createMembership = async (data: CreateMembershipDto, tenantGroupId: number): Promise<Membership> => {
         try {
             const payload: CreateMembershipCommand = {
                 tenantGroupId: tenantGroupId,
@@ -123,7 +103,7 @@ export const useMemberships = () => {
 
             console.log('Sending membership payload:', payload)
 
-            const response = await $fetch<MembershipDto>(
+            const response = await $fetch<Membership>(
                 `${config.public.apiBase}${MEMBERSHIP_ENDPOINTS.BASE}`,
                 {
                     method: 'POST',
@@ -150,10 +130,10 @@ export const useMemberships = () => {
     /**
      * Get membership by ID
      */
-    const getMembershipById = async (id: number): Promise<MembershipDto> => {
+    const getMembershipById = async (id: number): Promise<Membership> => {
         try {
-            const response = await api.get<MembershipDto>(MEMBERSHIP_ENDPOINTS.BY_ID(id))
-            return response.data as MembershipDto
+            const response = await api.get<Membership>(MEMBERSHIP_ENDPOINTS.BY_ID(id))
+            return response.data as Membership
         } catch (error) {
             console.error('Get membership error:', error)
             throw error
@@ -163,14 +143,14 @@ export const useMemberships = () => {
     /**
      * Get memberships by group
      */
-    const getMembershipsByGroup = async (groupId: number, status?: MembershipStatus): Promise<MembershipDto[]> => {
+    const getMembershipsByGroup = async (groupId: number, status?: MembershipStatus): Promise<Membership[]> => {
         try {
             let url = MEMBERSHIP_ENDPOINTS.BY_GROUP(groupId)
-            if (status) {
+            if (status !== undefined) {
                 url += `?status=${status}`
             }
-            const response = await api.get<MembershipDto[]>(url)
-            return response.data as MembershipDto[]
+            const response = await api.get<Membership[]>(url)
+            return response.data as Membership[]
         } catch (error) {
             console.error('Get memberships by group error:', error)
             throw error
@@ -180,10 +160,10 @@ export const useMemberships = () => {
     /**
      * Get memberships by status
      */
-    const getMembershipsByStatus = async (status: MembershipStatus): Promise<MembershipDto[]> => {
+    const getMembershipsByStatus = async (status: MembershipStatus): Promise<Membership[]> => {
         try {
-            const response = await api.get<MembershipDto[]>(MEMBERSHIP_ENDPOINTS.BY_STATUS(status))
-            return response.data as MembershipDto[]
+            const response = await api.get<Membership[]>(MEMBERSHIP_ENDPOINTS.BY_STATUS(status))
+            return response.data as Membership[]
         } catch (error) {
             console.error('Get memberships by status error:', error)
             throw error
@@ -193,13 +173,13 @@ export const useMemberships = () => {
     /**
      * Update membership status (Admin)
      */
-    const updateMembershipStatus = async (data: UpdateMembershipStatusDto): Promise<MembershipDto> => {
+    const updateMembershipStatus = async (data: UpdateMembershipStatusDto): Promise<Membership> => {
         try {
-            const response = await api.put<MembershipDto>(
+            const response = await api.put<Membership>(
                 MEMBERSHIP_ENDPOINTS.UPDATE_STATUS(data.membershipId),
                 data
             )
-            return response.data as MembershipDto
+            return response.data as Membership
         } catch (error) {
             console.error('Update membership status error:', error)
             throw error
@@ -221,10 +201,10 @@ export const useMemberships = () => {
     /**
      * Get memberships waiting for payment
      */
-    const getMembershipsWaitingPayment = async (): Promise<MembershipDto[]> => {
+    const getMembershipsWaitingPayment = async (): Promise<Membership[]> => {
         try {
-            const response = await api.get<MembershipDto[]>(MEMBERSHIP_ENDPOINTS.WAITING_PAYMENT)
-            return response.data as MembershipDto[]
+            const response = await api.get<Membership[]>(MEMBERSHIP_ENDPOINTS.WAITING_PAYMENT)
+            return response.data as Membership[]
         } catch (error) {
             console.error('Get memberships waiting payment error:', error)
             throw error
@@ -234,10 +214,10 @@ export const useMemberships = () => {
     /**
      * Get memberships with overdue payments
      */
-    const getMembershipsOverduePayment = async (): Promise<MembershipDto[]> => {
+    const getMembershipsOverduePayment = async (): Promise<Membership[]> => {
         try {
-            const response = await api.get<MembershipDto[]>(MEMBERSHIP_ENDPOINTS.OVERDUE_PAYMENTS)
-            return response.data as MembershipDto[]
+            const response = await api.get<Membership[]>(MEMBERSHIP_ENDPOINTS.OVERDUE_PAYMENTS)
+            return response.data as Membership[]
         } catch (error) {
             console.error('Get memberships overdue payment error:', error)
             throw error

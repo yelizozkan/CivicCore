@@ -16,6 +16,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using AssociationMembership.Application.Features.TenantGroup.Dtos;
 
 namespace AssociationMembership.Infrastructure.Services
 {
@@ -89,6 +90,19 @@ namespace AssociationMembership.Infrastructure.Services
                     PhoneConfirmed = user.PhoneConfirmed,
                     ProfileImageUrl = user.ProfileImageUrl,
                     CreatedDate = user.CreatedDate,
+
+                    TenantGroupId = user.TenantGroupId,
+                    TenantGroup = user.TenantGroup != null ? new Application.Features.TenantGroup.Dtos.TenantGroupDto
+                    {
+                        Id = user.TenantGroup.Id,
+                        TenantId = user.TenantGroup.TenantId,
+                        Name = user.TenantGroup.Name,
+                        Description = user.TenantGroup.Description,
+                        Slug = user.TenantGroup.Slug,
+                        CreatedDate = user.TenantGroup.CreatedDate
+                    } : null,  
+
+
                     Roles = user.UserRoles.Select(ur => new Application.DTOs.RoleDto
                     {
                         Id = ur.Role.Id,

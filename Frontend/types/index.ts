@@ -37,6 +37,35 @@ export interface RefreshTokenRequest {
   refreshToken: string
 }
 
+// TenantGroup Type
+export interface TenantGroup {
+  id: number
+  tenantId: number
+  name: string
+  description: string
+  slug: string
+  createdDate?: string
+  // Enhanced fields
+  logoUrl?: string
+  coverImageUrl?: string
+  mission?: string
+  vision?: string
+  address?: string
+  phone?: string
+  contactEmail?: string
+  email?: string // Alias for contactEmail if needed by API
+  website?: string
+  socialMedia?: {
+    facebook?: string
+    instagram?: string
+    twitter?: string
+    linkedin?: string
+  }
+  activities?: string[]
+  memberCount?: number
+  foundedDate?: string
+}
+
 // User Types
 export interface User {
   id: string
@@ -44,6 +73,8 @@ export interface User {
   lastName: string
   fullName: string
   email: string
+  tenantGroupId?: number
+  tenantGroup?: TenantGroup
   phoneNumber?: string
   status: UserStatus
   lastLoginDate?: string
@@ -328,3 +359,27 @@ export interface MembershipResponse {
 }
 
 export type StepDirection = 'right' | 'left'
+
+// Membership Types
+export enum MembershipStatus {
+  Pending = 0,
+  PreApproved = 1,
+  Approved = 2,
+  Rejected = 3,
+  Suspended = 4,
+  Cancelled = 5
+}
+
+export interface Membership {
+  id: number
+  firstName: string
+  lastName: string
+  email: string
+  mobilePhone?: string
+  status: MembershipStatus
+  createdAt: string
+  updatedAt?: string
+  // Add other fields if needed for the table
+  identityNumber?: string
+  profession?: string
+}

@@ -2,7 +2,13 @@
   <div class="step-content">
     <div class="step-header">
       <h2 class="step-title">Motivasyon</h2>
-      <p class="step-description">Derneğimize katılmak isteme nedeninizi paylaşın</p>
+    </div>
+
+    <div class="tips-container compact-tips">
+      <div class="tips-content">
+        <span class="tips-icon">💡</span>
+        <p><strong>İpucu:</strong> Derneğe katılma motivasyonunuzu, ilgi ve deneyim alanlarınızı ve nasıl katkı sunabileceğinizi kısaca paylaşabilirsiniz.</p>
+      </div>
     </div>
 
     <div class="input-group">
@@ -10,26 +16,15 @@
       <textarea 
         v-model="localData.motivationText" 
         class="input-field textarea-field" 
-        placeholder="Derneğimize neden katılmak istediğinizi, beklentilerinizi ve katkıda bulunmak istediğiniz alanları kısaca açıklayın..."
-        rows="6"
+        placeholder="Açıklamanızı buraya yazın..."
+        rows="8"
         required
       ></textarea>
-      <div class="char-count" :class="{ 'warning': charCount < 50 }">
+      <div class="char-count" :class="{ 'warning': charCount < 50, 'success': charCount >= 50 }">
         {{ charCount }} / 500 karakter
         <span v-if="charCount < 50" class="hint">(en az 50 karakter)</span>
+        <span v-else class="hint">✓</span>
       </div>
-    </div>
-
-    <div class="tips-box">
-      <div class="tips-header">
-        <span class="tips-icon">💡</span>
-        <span>İpuçları</span>
-      </div>
-      <ul class="tips-list">
-        <li>Derneğimizi nasıl tanıdığınızı belirtebilirsiniz</li>
-        <li>Hangi alanlarda katkıda bulunmak istediğinizi yazabilirsiniz</li>
-        <li>Beklentilerinizi ve hedeflerinizi paylaşabilirsiniz</li>
-      </ul>
     </div>
   </div>
 </template>
@@ -81,110 +76,110 @@ defineExpose({ validate })
 }
 
 .step-title {
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 700;
-  color: #ffffff;
+  color: #1e293b;
   margin-bottom: 4px;
 }
 
 .step-description {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 16px;
+  color: #64748b;
 }
 
 .input-group {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .input-label {
   display: block;
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+  font-weight: 600;
+  color: #334155;
   margin-bottom: 6px;
 }
 
 .required {
-  color: #f87171;
+  color: #ef4444;
 }
 
 .input-field {
   width: 100%;
-  padding: 12px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  font-size: 14px;
-  color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.05);
+  padding: 14px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 16px;
+  color: #1e293b;
+  background-color: white;
   transition: all 0.2s ease;
   outline: none;
 }
 
 .input-field:focus {
-  border-color: #3b82f6;
-  background-color: rgba(59, 130, 246, 0.1);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #9ca3af;
+  box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.15);
 }
 
 .input-field::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+  color: #94a3b8;
 }
 
 .textarea-field {
   resize: vertical;
   min-height: 120px;
   line-height: 1.6;
+  font-family: inherit;
 }
 
 .char-count {
   margin-top: 8px;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+  color: #64748b;
   text-align: right;
 }
 
 .char-count.warning {
-  color: #fbbf24;
+  color: #f59e0b;
+}
+
+.char-count.success {
+  color: #22c55e;
 }
 
 .char-count .hint {
   margin-left: 4px;
 }
 
-.tips-box {
-  background-color: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+/* Tips Box - Nötr/Gri */
+.tips-container.compact-tips {
+  margin-top: 0;
+  margin-bottom: 24px;
+  padding: 14px 18px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
   border-radius: 12px;
-  padding: 16px;
 }
 
-.tips-header {
+.tips-content {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #3b82f6;
-  margin-bottom: 12px;
+  gap: 12px;
+  align-items: flex-start;
 }
 
 .tips-icon {
-  font-size: 18px;
+  font-size: 20px;
+  line-height: 1;
 }
 
-.tips-list {
+.tips-content p {
   margin: 0;
-  padding-left: 20px;
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.6;
 }
 
-.tips-list li {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 6px;
-  line-height: 1.5;
-}
-
-.tips-list li:last-child {
-  margin-bottom: 0;
+.tips-content strong {
+  color: #334155;
+  font-weight: 600;
 }
 </style>

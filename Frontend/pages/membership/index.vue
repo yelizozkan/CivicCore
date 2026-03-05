@@ -20,9 +20,9 @@
       </div>
 
       <!-- Footer -->
-      <div class="register-footer">
+      <!-- <div class="register-footer">
         <p>Zaten üye misiniz? <a href="/" class="link">Giriş Yapın</a></p>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -51,15 +51,15 @@ useHead({
 <style scoped>
 .register-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1e293b 100%);
+  background: linear-gradient(145deg, #f7fdf9 0%, #f9fafb 40%, #f7fdf9 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
   position: relative;
+  overflow-x: hidden;
 }
 
-/* Subtle pattern overlay */
 .register-page::before {
   content: '';
   position: absolute;
@@ -68,24 +68,26 @@ useHead({
   right: 0;
   bottom: 0;
   background-image: 
-    radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(20, 184, 166, 0.1) 0%, transparent 50%);
+    radial-gradient(circle at 15% 15%, rgba(34, 197, 94, 0.04) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.04) 0%, transparent 45%);
   pointer-events: none;
 }
 
 .register-container {
   width: 100%;
-  max-width: 900px;
+  max-width: 1100px;
   animation: fadeInUp 0.6s ease;
   position: relative;
   z-index: 1;
 }
 
 .register-card {
-  background: rgba(30, 41, 59, 0.8);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(180deg, #ffffff 0%, #fdfffe 100%);
+  border: 1px solid rgba(34, 197, 94, 0.08);
+  box-shadow: 
+    0 4px 6px rgba(34, 197, 94, 0.02),
+    0 12px 24px rgba(0, 0, 0, 0.03),
+    0 24px 48px rgba(34, 197, 94, 0.04);
   padding: 48px;
   border-radius: 24px;
 }
@@ -93,7 +95,7 @@ useHead({
 /* Header */
 .register-header {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 40px;
 }
 
 .logo-container {
@@ -103,51 +105,34 @@ useHead({
   width: 80px;
   height: 80px;
   border-radius: 20px;
-  background: linear-gradient(135deg, #3b82f6 0%, #14b8a6 100%);
-  margin-bottom: 20px;
-  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
-  animation: pulse 2s infinite;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  margin-bottom: 24px;
+  box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
+  animation: pulse 3s infinite;
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4); }
-  50% { transform: scale(1.05); box-shadow: 0 12px 40px rgba(59, 130, 246, 0.6); }
+  0%, 100% { transform: scale(1); box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3); }
+  50% { transform: scale(1.03); box-shadow: 0 15px 35px rgba(34, 197, 94, 0.4); }
 }
 
 .register-title {
   font-size: 28px;
-  font-weight: 700;
-  color: #ffffff;
+  font-weight: 800;
+  color: #1e293b;
   margin-bottom: 8px;
   letter-spacing: -0.5px;
 }
 
 .register-subtitle {
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+  color: #64748b;
+  font-weight: 500;
 }
 
-/* Footer */
+/* Footer - Hidden */
 .register-footer {
-  text-align: center;
-  margin-top: 24px;
-}
-
-.register-footer p {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.link {
-  color: #3b82f6;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-.link:hover {
-  color: #14b8a6;
-  text-decoration: underline;
+  display: none;
 }
 
 @keyframes fadeInUp {
@@ -164,6 +149,7 @@ useHead({
 @media (max-width: 768px) {
   .register-card {
     padding: 32px 20px;
+    border-radius: 20px;
   }
   
   .register-title {
@@ -171,8 +157,9 @@ useHead({
   }
   
   .logo-container {
-    width: 70px;
-    height: 70px;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 20px;
   }
 }
 </style>

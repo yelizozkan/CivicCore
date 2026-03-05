@@ -67,14 +67,14 @@
 .success-title {
   font-size: 24px;
   font-weight: 700;
-  color: #ffffff;
+  color: #1e293b;
   margin-bottom: 12px;
 }
 
 .success-message {
   font-size: 14px;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.6);
+  color: #64748b;
   max-width: 400px;
   margin: 0 auto 24px;
 }
@@ -85,8 +85,8 @@
   justify-content: center;
   gap: 10px;
   padding: 14px 20px;
-  background-color: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
   border-radius: 10px;
   margin-bottom: 24px;
 }
@@ -102,18 +102,19 @@
 }
 
 .next-steps {
-  background-color: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: white;
+  border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 24px;
   text-align: left;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .next-steps h3 {
   font-size: 14px;
   font-weight: 600;
-  color: #ffffff;
+  color: #1e293b;
   margin-bottom: 16px;
   text-align: center;
 }
@@ -146,7 +147,7 @@
 
 .step-item span:last-child {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.6);
+  color: #64748b;
 }
 
 .home-btn {

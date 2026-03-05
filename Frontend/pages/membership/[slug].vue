@@ -42,9 +42,9 @@
       </div>
 
       <!-- Footer -->
-      <div class="register-footer">
+      <!-- <div class="register-footer">
         <p>Zaten üye misiniz? <a href="/" class="link">Giriş Yapın</a></p>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -122,12 +122,13 @@ onMounted(async () => {
 <style scoped>
 .register-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1e293b 100%);
+  background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 50%, #f0fdf4 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
   position: relative;
+  overflow-x: hidden;
 }
 
 .register-page::before {
@@ -138,8 +139,9 @@ onMounted(async () => {
   right: 0;
   bottom: 0;
   background-image: 
-    radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(20, 184, 166, 0.1) 0%, transparent 50%);
+    radial-gradient(circle at 20% 20%, rgba(34, 197, 94, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(74, 222, 128, 0.04) 0%, transparent 40%);
   pointer-events: none;
 }
 
@@ -149,15 +151,15 @@ onMounted(async () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #475569;
   z-index: 1;
 }
 
 .spinner {
   width: 48px;
   height: 48px;
-  border: 3px solid rgba(255, 255, 255, 0.1);
-  border-top-color: #3b82f6;
+  border: 3px solid rgba(34, 197, 94, 0.2);
+  border-top-color: #22c55e;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -169,7 +171,7 @@ onMounted(async () => {
 .loading-container p {
   margin-top: 16px;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.6);
+  color: #64748b;
 }
 
 /* Error State */
@@ -178,13 +180,13 @@ onMounted(async () => {
 }
 
 .error-card {
-  background: rgba(30, 41, 59, 0.8);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: white;
+  border: 1px solid #fee2e2;
   border-radius: 24px;
   padding: 48px;
   text-align: center;
   max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
 .error-icon {
@@ -195,20 +197,20 @@ onMounted(async () => {
 .error-card h2 {
   font-size: 24px;
   font-weight: 700;
-  color: #ffffff;
+  color: #1e293b;
   margin-bottom: 12px;
 }
 
 .error-card p {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.6);
+  color: #64748b;
   margin-bottom: 24px;
 }
 
 .home-link {
   display: inline-block;
   padding: 12px 24px;
-  background: linear-gradient(135deg, #3b82f6 0%, #14b8a6 100%);
+  background: linear-gradient(135deg, #22c55e 0%, #14b8a6 100%);
   color: white;
   text-decoration: none;
   border-radius: 10px;
@@ -218,23 +220,22 @@ onMounted(async () => {
 
 .home-link:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
 }
 
 /* Register Container */
 .register-container {
   width: 100%;
-  max-width: 900px;
+  max-width: 800px;
   animation: fadeInUp 0.6s ease;
   position: relative;
   z-index: 1;
 }
 
 .register-card {
-  background: rgba(30, 41, 59, 0.8);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+  background: white;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
   padding: 48px;
   border-radius: 24px;
 }
@@ -242,7 +243,7 @@ onMounted(async () => {
 /* Header */
 .register-header {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 40px;
 }
 
 .logo-container {
@@ -253,56 +254,39 @@ onMounted(async () => {
   height: 80px;
   border-radius: 20px;
   background: linear-gradient(135deg, #3b82f6 0%, #14b8a6 100%);
-  margin-bottom: 20px;
-  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
+  margin-bottom: 24px;
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.25);
 }
 
 .register-title {
   font-size: 28px;
-  font-weight: 700;
-  color: #ffffff;
+  font-weight: 800;
+  color: #1e293b;
   margin-bottom: 8px;
   letter-spacing: -0.5px;
 }
 
 .register-subtitle {
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+  color: #64748b;
   margin-bottom: 12px;
+  font-weight: 500;
 }
 
 .tenant-badge {
   display: inline-block;
   padding: 6px 16px;
-  background: rgba(59, 130, 246, 0.2);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
-  color: #60a5fa;
-}
-
-/* Footer */
-.register-footer {
-  text-align: center;
-  margin-top: 24px;
-}
-
-.register-footer p {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.link {
   color: #3b82f6;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s;
 }
 
-.link:hover {
-  color: #14b8a6;
-  text-decoration: underline;
+/* Footer - Hidden */
+.register-footer {
+  display: none;
 }
 
 @keyframes fadeInUp {
@@ -326,8 +310,9 @@ onMounted(async () => {
   }
   
   .logo-container {
-    width: 70px;
-    height: 70px;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 20px;
   }
 }
 </style>

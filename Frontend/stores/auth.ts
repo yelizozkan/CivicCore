@@ -31,7 +31,7 @@ export const useAuthStore = defineStore('auth', {
     },
     isTokenExpired: (state) => {
       if (!state.accessToken) return true
-      
+
       try {
         const decoded: any = jwtDecode(state.accessToken)
         const currentTime = Date.now() / 1000
@@ -39,13 +39,15 @@ export const useAuthStore = defineStore('auth', {
       } catch {
         return true
       }
-    }
+    },
+    getTenantGroup: (state) => state.user?.tenantGroup || null,
+    getCurrentTenantGroupId: (state) => state.user?.tenantGroupId || null
   },
 
   actions: {
     async setAuth(authData: LoginResponse) {
       console.log('setAuth called with:', authData)
-      
+
       this.user = authData.user
       this.accessToken = authData.accessToken
       this.refreshToken = authData.refreshToken
@@ -67,7 +69,7 @@ export const useAuthStore = defineStore('auth', {
         secure: true,
         sameSite: 'strict'
       })
-      
+
       const refreshTokenCookie = useCookie('refresh_token', {
         default: () => null,
         maxAge: 60 * 60 * 24 * 30, // 30 days
@@ -123,7 +125,7 @@ export const useAuthStore = defineStore('auth', {
 
       const accessTokenCookie = useCookie('access_token')
       const refreshTokenCookie = useCookie('refresh_token')
-      
+
       if (accessTokenCookie.value && refreshTokenCookie.value) {
         this.accessToken = accessTokenCookie.value
         this.refreshToken = refreshTokenCookie.value

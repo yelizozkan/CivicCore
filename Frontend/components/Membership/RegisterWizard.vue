@@ -10,7 +10,11 @@
     </div>
 
     <div v-else>
-      <ProgressIndicator :current-step="currentStep" :total-steps="totalSteps" />
+      <ProgressIndicator 
+        :current-step="currentStep" 
+        :total-steps="totalSteps" 
+        @step-click="handleEdit" 
+      />
 
       <div class="step-wrapper">
         <Transition :name="transitionName" mode="out-in">
@@ -26,14 +30,17 @@
 
       <div class="button-group">
         <button v-if="currentStep > 1" type="button" class="btn-back" @click="prevStep">
-          ← Geri
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          Geri
         </button>
         <div v-else class="spacer"></div>
 
         <button type="button" class="btn-next" @click="handleNext" :disabled="isLoading">
           <span v-if="isLoading" class="btn-spinner"></span>
           <template v-else>
-            {{ currentStep === totalSteps ? 'Başvuruyu Gönder ✓' : 'Sonraki Adım →' }}
+            {{ currentStep === totalSteps ? 'Başvuruyu Tamamla' : 'Devam Et' }}
           </template>
         </button>
       </div>
@@ -60,6 +67,7 @@
 <script setup lang="ts">
 //#region Imports
 import { ref, reactive, computed } from 'vue'
+import { useMemberships } from '~/composables/useMemberships'
 import StepPersonalInfo from './StepPersonalInfo.vue'
 import StepContactInfo from './StepContactInfo.vue'
 import StepProfessional from './StepProfessional.vue'
@@ -214,9 +222,17 @@ const prevStep = () => {
 }
 
 const handleEdit = (step: number) => {
-  direction.value = 'left'
-  currentStep.value = step
-  scrollToTop()
+  if (step < currentStep.value) {
+     direction.value = 'left'
+     currentStep.value = step
+     scrollToTop()
+  } else if (step > currentStep.value) {
+      // In case we want to support jumping forward if already visited
+      // For now disable forward jump unless it is implemented
+      direction.value = 'right'
+      currentStep.value = step
+      scrollToTop()
+  }
 }
 
 const submitForm = async () => {
@@ -297,7 +313,7 @@ const submitForm = async () => {
 .spinner {
   width: 48px;
   height: 48px;
-  border: 3px solid rgba(255, 255, 255, 0.1);
+  border: 3px solid rgba(59, 130, 246, 0.2);
   border-top-color: #3b82f6;
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -310,22 +326,28 @@ const submitForm = async () => {
 .loading-state p {
   margin-top: 16px;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
+  color: #64748b;
 }
 
 .step-wrapper {
   min-height: 350px;
   position: relative;
+  padding: 10px 0;
 }
 
 .button-group {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 28px;
-  padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid #e2e8f0;
   gap: 16px;
+  /* Sticky footer optional */
+  /* position: sticky; 
+     bottom: 0;
+     background: white;
+     z-index: 10; */
 }
 
 .spacer {
@@ -333,50 +355,66 @@ const submitForm = async () => {
 }
 
 .btn-back {
-  padding: 12px 24px;
-  font-size: 14px;
+  padding: 14px 20px;
+  font-size: 16px;
   font-weight: 600;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background-color: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.btn-back:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-.btn-next {
-  padding: 12px 28px;
-  font-size: 14px;
-  font-weight: 600;
-  border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
-  background: linear-gradient(135deg, #3b82f6 0%, #14b8a6 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.35);
+  background: transparent;
+  color: #22c55e;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 0;
+}
+
+.btn-back:hover {
+  color: #16a34a;
+  background: transparent;
+}
+
+.btn-next {
+  padding: 14px 32px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: none;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: #166534;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.25);
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.3px;
 }
 
 .btn-next:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.45);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.35);
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: white;
+}
+
+.btn-next:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(34, 197, 94, 0.2);
 }
 
 .btn-next:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
 .btn-spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid transparent;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -394,19 +432,19 @@ const submitForm = async () => {
   gap: 12px;
   padding: 12px 18px;
   border-radius: 10px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
 
 .error-toast {
-  background-color: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background-color: #fef2f2;
+  border: 1px solid #fee2e2;
 }
 
 .error-toast span {
   font-size: 13px;
   font-weight: 500;
-  color: #f87171;
+  color: #ef4444;
 }
 
 .error-toast button {
@@ -414,13 +452,13 @@ const submitForm = async () => {
   background: none;
   border: none;
   font-size: 18px;
-  color: #f87171;
+  color: #ef4444;
   cursor: pointer;
 }
 
 .success-toast {
-  background-color: rgba(16, 185, 129, 0.15);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background-color: #ecfdf5;
+  border: 1px solid #d1fae5;
 }
 
 .success-toast span {

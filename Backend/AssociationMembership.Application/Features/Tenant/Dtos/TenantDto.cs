@@ -14,6 +14,7 @@ namespace AssociationMembership.Application.Features.Tenant.Dtos
         public string Description { get; set; }
         public string LogoUrl { get; set; }
         public bool IsActive { get; set; }
+        public string Slug { get; set; }
         public DateTime CreatedDate { get; set; }
     }
 }

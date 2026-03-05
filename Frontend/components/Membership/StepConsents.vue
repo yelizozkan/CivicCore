@@ -2,40 +2,42 @@
   <div class="step-content">
     <div class="step-header">
       <h2 class="step-title">Yasal Onaylar</h2>
-      <p class="step-description">Üyelik için gerekli belgeleri okuyup onaylayın</p>
     </div>
 
     <!-- KVKK Consent -->
     <div class="consent-card" :class="{ 'approved': localData.kvkkAccepted }">
-      <label class="consent-checkbox">
-        <input type="checkbox" v-model="localData.kvkkAccepted" disabled />
-        <span class="checkmark"></span>
+      <div class="consent-checkbox clickable-area" @click.prevent="toggleConsent('kvkk')">
+        <div class="checkbox-wrapper">
+          <input type="checkbox" :checked="localData.kvkkAccepted" readonly />
+          <span class="checkmark"></span>
+        </div>
         <span class="checkbox-label">
-          <button type="button" class="link-button" @click="openModal('kvkk')">
+          <button type="button" class="link-button" @click.stop="openModal('kvkk')">
             KVKK Aydınlatma Metni
           </button>'ni okudum ve kabul ediyorum.
         </span>
-      </label>
+      </div>
       <span v-if="localData.kvkkAccepted" class="approved-badge">✓ Onaylandı</span>
     </div>
 
     <!-- Explicit Consent -->
     <div class="consent-card" :class="{ 'approved': localData.explicitConsentAccepted }">
-      <label class="consent-checkbox">
-        <input type="checkbox" v-model="localData.explicitConsentAccepted" disabled />
-        <span class="checkmark"></span>
+      <div class="consent-checkbox clickable-area" @click.prevent="toggleConsent('explicit')">
+        <div class="checkbox-wrapper">
+          <input type="checkbox" :checked="localData.explicitConsentAccepted" readonly />
+          <span class="checkmark"></span>
+        </div>
         <span class="checkbox-label">
-          <button type="button" class="link-button" @click="openModal('explicit')">
+          <button type="button" class="link-button" @click.stop="openModal('explicit')">
             Açık Rıza Beyanı
           </button>'nı okudum ve kabul ediyorum.
         </span>
-      </label>
+      </div>
       <span v-if="localData.explicitConsentAccepted" class="approved-badge">✓ Onaylandı</span>
     </div>
 
     <div class="info-box">
-      <span>ℹ️</span>
-      <p>Belgeleri okumak için üzerlerine tıklayın. Onay vermek için belgeyi sonuna kadar okumanız gerekmektedir.</p>
+      <p class="helper-text">Belgeleri okumak için üzerlerine tıklayın. Onay vermek için belgeyi sonuna kadar okumanız gerekmektedir.</p>
     </div>
 
     <!-- KVKK Modal -->
@@ -256,6 +258,22 @@ const acceptConsent = (type: 'kvkk' | 'explicit') => {
   closeModal()
 }
 
+const toggleConsent = (type: 'kvkk' | 'explicit') => {
+  if (type === 'kvkk') {
+    if (localData.kvkkAccepted) {
+      localData.kvkkAccepted = false // Allow unchecking
+    } else {
+      openModal('kvkk') // If not accepted, must open modal to accept
+    }
+  } else {
+    if (localData.explicitConsentAccepted) {
+      localData.explicitConsentAccepted = false // Allow unchecking
+    } else {
+      openModal('explicit') // If not accepted, must open modal to accept
+    }
+  }
+}
+
 // Validation
 const validate = (): boolean => {
   if (!localData.kvkkAccepted) return false
@@ -282,41 +300,54 @@ defineExpose({ validate })
 }
 
 .step-title {
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 700;
-  color: #ffffff;
+  color: #1e293b;
   margin-bottom: 4px;
 }
 
 .step-description {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 16px;
+  color: #64748b;
 }
 
-/* Consent Cards */
+/* Consent Cards - Light Theme */
 .consent-card {
-  background-color: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 12px;
-  padding: 16px;
+  padding: 18px 20px;
   margin-bottom: 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+}
+
+.consent-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .consent-card.approved {
-  background-color: rgba(16, 185, 129, 0.1);
-  border-color: rgba(16, 185, 129, 0.3);
+  background-color: #f8fafc;
+  border-color: #94a3b8;
 }
 
 .consent-checkbox {
   display: flex;
   align-items: center;
-  gap: 12px;
-  cursor: default;
+  gap: 14px;
+  cursor: pointer;
   flex: 1;
+}
+
+.clickable-area {
+  cursor: pointer;
+}
+
+.checkbox-wrapper {
+  position: relative;
 }
 
 .consent-checkbox input {
@@ -326,88 +357,98 @@ defineExpose({ validate })
 .checkmark {
   width: 22px;
   height: 22px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid #cbd5e1;
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
   flex-shrink: 0;
+  background-color: #ffffff;
+}
+
+.consent-card:hover .checkmark {
+  border-color: #94a3b8;
 }
 
 .consent-card.approved .checkmark {
-  background-color: #10b981;
-  border-color: #10b981;
+  background-color: #22c55e;
+  border-color: #22c55e;
 }
 
 .consent-card.approved .checkmark::after {
   content: '✓';
   color: white;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
 }
 
 .checkbox-label {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 15px;
+  color: #334155;
+  line-height: 1.4;
 }
 
 .link-button {
   background: none;
   border: none;
-  color: #3b82f6;
-  font-size: 14px;
+  color: #1e40af;
+  font-size: 15px;
   font-weight: 600;
   text-decoration: underline;
+  text-underline-offset: 2px;
   cursor: pointer;
   padding: 0;
   transition: color 0.2s;
 }
 
 .link-button:hover {
-  color: #60a5fa;
+  color: #1e3a8a;
 }
 
 .approved-badge {
   font-size: 12px;
   font-weight: 600;
-  color: #10b981;
-  background-color: rgba(16, 185, 129, 0.15);
+  color: #22c55e;
+  background-color: #e2e8f0;
   padding: 6px 12px;
-  border-radius: 20px;
+  border-radius: 6px;
   white-space: nowrap;
 }
 
+/* Info Box - Nötr */
 .info-box {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 14px 16px;
-  background-color: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  gap: 12px;
+  padding: 14px 18px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
   border-radius: 10px;
-  margin-top: 16px;
+  margin-top: 20px;
 }
 
 .info-box span:first-child {
   font-size: 18px;
+  line-height: 1;
 }
 
 .info-box p {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  color: #64748b;
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
-/* Modal Styles */
+/* Modal Styles - Light Theme */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -416,42 +457,44 @@ defineExpose({ validate })
 }
 
 .modal-container {
-  background-color: #1e293b;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
   max-width: 700px;
   width: 100%;
   max-height: 85vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
 }
 
 .modal-header {
   padding: 20px 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid #e2e8f0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
+  background-color: #f8fafc;
+  border-radius: 16px 16px 0 0;
 }
 
 .modal-header h2 {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  color: #ffffff;
+  color: #1e293b;
   margin: 0;
 }
 
 .modal-close {
   width: 36px;
   height: 36px;
-  border: none;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  font-size: 24px;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  border-radius: 8px;
+  font-size: 20px;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.6);
+  color: #64748b;
   transition: all 0.2s;
   display: flex;
   align-items: center;
@@ -459,26 +502,39 @@ defineExpose({ validate })
 }
 
 .modal-close:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-  color: #ffffff;
+  background-color: #f1f5f9;
+  color: #1e293b;
+  border-color: #cbd5e1;
 }
 
 .modal-body {
   padding: 24px;
   overflow-y: auto;
   flex: 1;
+  background-color: #ffffff;
 }
 
+.info-box p:not(.helper-text) {
+  font-size: 12px;
+  color: #94a3b8;
+  text-align: center;
+  margin: 8px 0 0 0;
+  line-height: 1.4;
+}
+
+
 .document-content {
-  color: rgba(255, 255, 255, 0.8);
+  color: #334155;
   line-height: 1.7;
 }
 
 .document-content h3 {
-  font-size: 16px;
-  font-weight: 600;
-  color: #ffffff;
-  margin: 24px 0 12px 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 28px 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .document-content h3:first-child {
@@ -488,40 +544,45 @@ defineExpose({ validate })
 .document-content p {
   font-size: 14px;
   margin-bottom: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  color: #475569;
+  text-align: justify;
 }
 
 .document-content ul {
   margin: 12px 0;
-  padding-left: 24px;
+  padding-left: 20px;
 }
 
 .document-content li {
   font-size: 14px;
   margin-bottom: 8px;
-  color: rgba(255, 255, 255, 0.7);
+  color: #475569;
+  line-height: 1.6;
 }
 
 .document-content strong {
-  color: #ffffff;
+  color: #1e293b;
+  font-weight: 600;
 }
 
 .last-update {
   margin-top: 32px;
   padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid #e2e8f0;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.4);
+  color: #94a3b8;
 }
 
 .modal-footer {
   padding: 16px 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid #e2e8f0;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
   flex-shrink: 0;
+  background-color: #f8fafc;
+  border-radius: 0 0 16px 16px;
 }
 
 .scroll-indicator {
@@ -529,7 +590,8 @@ defineExpose({ validate })
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #fbbf24;
+  color: #f59e0b;
+  font-weight: 500;
   animation: bounce 1s infinite;
 }
 
@@ -545,10 +607,10 @@ defineExpose({ validate })
 .accept-button {
   width: 100%;
   padding: 14px 24px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background-color: #1e293b;
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
@@ -556,13 +618,13 @@ defineExpose({ validate })
 }
 
 .accept-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+  background-color: #0f172a;
+  box-shadow: 0 4px 12px rgba(30, 41, 59, 0.25);
 }
 
 .accept-button:disabled {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.3);
+  background-color: #e2e8f0;
+  color: #94a3b8;
   cursor: not-allowed;
 }
 
@@ -587,14 +649,20 @@ defineExpose({ validate })
   .modal-container {
     max-height: 90vh;
     margin: 10px;
+    border-radius: 12px;
   }
   
   .modal-header {
     padding: 16px 20px;
+    border-radius: 12px 12px 0 0;
   }
   
   .modal-body {
     padding: 20px;
+  }
+  
+  .modal-footer {
+    border-radius: 0 0 12px 12px;
   }
   
   .consent-card {

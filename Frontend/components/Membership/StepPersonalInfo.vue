@@ -2,7 +2,6 @@
   <div class="step-content">
     <div class="step-header">
       <h2 class="step-title">Kişisel Bilgiler</h2>
-      <p class="step-description">Kimlik bilgilerinizi girin</p>
     </div>
 
     <div class="form-grid">
@@ -122,21 +121,21 @@ defineExpose({ validate })
 }
 
 .step-title {
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 700;
-  color: #ffffff;
+  color: #1e293b;
   margin-bottom: 4px;
 }
 
 .step-description {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 16px;
+  color: #64748b;
 }
 
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 20px;
 }
 
 @media (max-width: 640px) {
@@ -146,46 +145,45 @@ defineExpose({ validate })
 }
 
 .input-group {
-  margin-bottom: 12px;
+  margin-bottom: 20px;
 }
 
 .input-label {
   display: block;
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+  font-weight: 600;
+  color: #334155;
   margin-bottom: 6px;
 }
 
 .required {
-  color: #f87171;
+  color: #ef4444;
 }
 
 .input-field {
   width: 100%;
-  padding: 12px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  font-size: 14px;
-  color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.05);
+  padding: 14px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 16px;
+  color: #1e293b;
+  background-color: white;
   transition: all 0.2s ease;
   outline: none;
 }
 
 .input-field:focus {
-  border-color: #3b82f6;
-  background-color: rgba(59, 130, 246, 0.1);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
 }
 
 .input-field::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+  color: #94a3b8;
 }
 
 .select-field {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 16px;
@@ -194,7 +192,13 @@ defineExpose({ validate })
 }
 
 .select-field option {
-  background-color: #1e293b;
-  color: #ffffff;
+  background-color: white;
+  color: #1e293b;
+}
+
+.select-field option:checked,
+.select-field option:hover {
+  background-color: #dcfce7;
+  color: #166534;
 }
 </style>

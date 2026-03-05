@@ -19,6 +19,10 @@ namespace AssociationMembership.Application.DTOs
         public bool PhoneConfirmed { get; set; }
         public string ProfileImageUrl { get; set; }
         public DateTime CreatedDate { get; set; }
+
+        public int TenantGroupId { get; set; }
+        public TenantGroupDto TenantGroup { get; set; }
+
         public List<RoleDto> Roles { get; set; } = new List<RoleDto>();
         public List<PermissionDto> Permissions { get; set; } = new List<PermissionDto>();
     }

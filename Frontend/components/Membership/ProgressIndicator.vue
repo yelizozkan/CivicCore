@@ -6,8 +6,10 @@
       class="step-item"
       :class="{ 
         'active': currentStep === index + 1,
-        'completed': currentStep > index + 1
+        'completed': currentStep > index + 1,
+        'clickable': true
       }"
+      @click="handleStepClick(index)"
     >
       <div class="step-circle">
         <svg v-if="currentStep > index + 1" class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
@@ -27,9 +29,18 @@ interface Props {
   totalSteps: number
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
+const emit = defineEmits(['step-click'])
 
 const steps = ['Kişisel', 'İletişim', 'Meslek', 'Motivasyon', 'Onaylar', 'Özet']
+
+const handleStepClick = (index: number) => {
+  const targetStep = index + 1
+  // Herhangi bir step'e tıklanabilir (ileri veya geri)
+  if (targetStep !== props.currentStep) {
+    emit('step-click', targetStep)
+  }
+}
 </script>
 
 <style scoped>
@@ -38,10 +49,7 @@ const steps = ['Kişisel', 'İletişim', 'Meslek', 'Motivasyon', 'Onaylar', 'Öz
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 32px;
-  padding: 20px 10px;
-  background: rgba(15, 23, 42, 0.6);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 0 10px;
 }
 
 .step-item {
@@ -50,6 +58,11 @@ const steps = ['Kişisel', 'İletişim', 'Meslek', 'Motivasyon', 'Onaylar', 'Öz
   align-items: center;
   position: relative;
   flex: 1;
+  cursor: default;
+}
+
+.step-item.completed {
+  cursor: pointer;
 }
 
 .step-circle {
@@ -60,87 +73,106 @@ const steps = ['Kişisel', 'İletişim', 'Meslek', 'Motivasyon', 'Onaylar', 'Öz
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size: 16px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 15px;
+  background-color: #f8fafc;
+  color: #94a3b8;
   transition: all 0.3s ease;
   position: relative;
   z-index: 2;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid #e2e8f0;
 }
 
-/* Aktif adım */
+/* Aktif adım - Yeşil */
 .step-item.active .step-circle {
-  background: linear-gradient(135deg, #3b82f6 0%, #14b8a6 100%);
-  color: white;
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-  border-color: transparent;
+  background: white;
+  color: #22c55e;
+  border-color: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
+  transform: scale(1.1);
 }
 
-/* Tamamlanmış adım */
+/* Tamamlanmış adım - Yeşil */
 .step-item.completed .step-circle {
-  background-color: #10b981;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
   color: white;
-  border-color: #10b981;
+  border-color: #22c55e;
+}
+
+.step-item.completed:hover .step-circle {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  border-color: #16a34a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
 }
 
 .check-icon {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .step-label {
-  margin-top: 8px;
-  font-size: 11px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.4);
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
   text-align: center;
   transition: all 0.3s ease;
 }
 
 .step-item.active .step-label {
-  color: #3b82f6;
-  font-weight: 600;
+  color: #1e293b;
+  font-weight: 700;
 }
 
 .step-item.completed .step-label {
-  color: #10b981;
+  color: #22c55e;
 }
 
+/* Çizgi - Yeşil gradient */
 .step-line {
   position: absolute;
   top: 22px;
-  left: calc(50% + 28px);
-  width: calc(100% - 56px);
-  height: 2px;
-  background-color: rgba(255, 255, 255, 0.1);
+  left: calc(50% + 22px);
+  width: calc(100% - 44px);
+  height: 3px;
+  background-color: #e2e8f0;
   z-index: 1;
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
+  border-radius: 2px;
 }
 
 .step-line.completed {
-  background-color: #10b981;
+  background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
 }
 
 @media (max-width: 768px) {
   .progress-container {
-    padding: 16px 8px;
+    padding: 0;
+    margin-bottom: 24px;
   }
   
   .step-circle {
     width: 36px;
     height: 36px;
-    font-size: 14px;
+    font-size: 13px;
   }
   
   .step-label {
-    font-size: 9px;
+    font-size: 11px;
+    display: none;
   }
   
+  .step-item.active .step-label {
+    display: block;
+    position: absolute;
+    bottom: -20px;
+    width: 100px;
+  }
+
   .step-line {
     top: 18px;
-    left: calc(50% + 22px);
-    width: calc(100% - 44px);
+    left: calc(50% + 18px);
+    width: calc(100% - 36px);
   }
 }
 </style>

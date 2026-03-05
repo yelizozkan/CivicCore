@@ -32,10 +32,12 @@ public class UserRepository : RepositoryBase<User, int>, IUserRepository
     public async Task<User> GetUserWithPermissionsAsync(int userId)
     {
         return await _context.Set<User>()
+            .Include(u => u.TenantGroup)           
+                .ThenInclude(tg => tg.Tenant)      
             .Include(u => u.UserRoles)
-            .ThenInclude(ur => ur.Role)
-            .ThenInclude(r => r.RolePermissions)
-            .ThenInclude(rp => rp.Permission)
+                .ThenInclude(ur => ur.Role)
+                .ThenInclude(r => r.RolePermissions)
+                .ThenInclude(rp => rp.Permission)
             .FirstOrDefaultAsync(u => u.Id == userId);
     }
 

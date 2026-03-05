@@ -78,12 +78,12 @@
       </div>
       <div class="consent-list">
         <div class="consent-item" :class="{ approved: formData.kvkkAccepted }">
-          <span>{{ formData.kvkkAccepted ? '✓' : '○' }}</span>
-          <span>KVKK Aydınlatma Metni</span>
+          <span class="check">{{ formData.kvkkAccepted ? '✓' : '○' }}</span>
+          <span>KVKK Aydınlatma Metni Okundu ve Onaylandı</span>
         </div>
         <div class="consent-item" :class="{ approved: formData.explicitConsentAccepted }">
-          <span>{{ formData.explicitConsentAccepted ? '✓' : '○' }}</span>
-          <span>Açık Rıza Metni</span>
+          <span class="check">{{ formData.explicitConsentAccepted ? '✓' : '○' }}</span>
+          <span>Açık Rıza Metni Okundu ve Onaylandı</span>
         </div>
       </div>
     </div>
@@ -148,28 +148,29 @@ defineExpose({ validate })
 }
 
 .step-header {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   text-align: center;
 }
 
 .step-title {
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 700;
-  color: #ffffff;
+  color: #1e293b;
   margin-bottom: 4px;
 }
 
 .step-description {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 16px;
+  color: #64748b;
 }
 
 .review-section {
-  background-color: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: white;
+  border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 16px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .section-header {
@@ -178,7 +179,7 @@ defineExpose({ validate })
   gap: 10px;
   margin-bottom: 12px;
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .section-icon {
@@ -189,23 +190,24 @@ defineExpose({ validate })
   flex: 1;
   font-size: 15px;
   font-weight: 600;
-  color: #ffffff;
+  color: #1e293b;
   margin: 0;
 }
 
 .edit-btn {
   padding: 6px 12px;
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: white;
+  border: 1px solid #e2e8f0;
   border-radius: 6px;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+  color: #64748b;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .edit-btn:hover {
-  background-color: rgba(59, 130, 246, 0.2);
+  background-color: #f8fafc;
   border-color: #3b82f6;
   color: #3b82f6;
 }
@@ -213,11 +215,11 @@ defineExpose({ validate })
 .info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 12px;
 }
 
 .info-item {
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: #f8fafc;
   padding: 10px 12px;
   border-radius: 8px;
 }
@@ -225,15 +227,17 @@ defineExpose({ validate })
 .info-item .label {
   display: block;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
+  color: #94a3b8;
   margin-bottom: 2px;
   text-transform: uppercase;
+  font-weight: 600;
 }
 
 .info-item .value {
   font-size: 13px;
   font-weight: 500;
-  color: #ffffff;
+  color: #334155;
+  word-break: break-all;
 }
 
 .consent-list {
@@ -247,26 +251,32 @@ defineExpose({ validate })
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: #f8fafc;
   border-radius: 8px;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.5);
+  color: #64748b;
+  border: 1px solid transparent;
 }
 
 .consent-item.approved {
-  background-color: rgba(16, 185, 129, 0.1);
-  color: #10b981;
+  background-color: #f0fdf4; /* Green-50 */
+  color: #15803d; /* Green-700 */
+  border-color: #dcfce7;
+}
+
+.consent-item .check {
+  font-weight: bold;
 }
 
 .note-box {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 12px 16px;
-  background-color: rgba(251, 191, 36, 0.1);
-  border: 1px solid rgba(251, 191, 36, 0.2);
+  padding: 16px;
+  background-color: #fffbeb; /* Amber-50 */
+  border: 1px solid #fcd34d; /* Amber-300 */
   border-radius: 10px;
-  margin-top: 16px;
+  margin-top: 24px;
 }
 
 .note-box span:first-child {
@@ -275,7 +285,7 @@ defineExpose({ validate })
 
 .note-box p {
   font-size: 13px;
-  color: #fbbf24;
+  color: #b45309; /* Amber-700 */
   margin: 0;
   line-height: 1.5;
 }
