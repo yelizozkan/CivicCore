@@ -19,6 +19,11 @@
       icon: 'mdi-account-group',
       children: [
         {
+          title: 'Üyeler',
+          icon: 'mdi-card-account-details',
+          to: '/memberships'
+        },
+        {
           title: 'Users',
           icon: 'mdi-account-multiple',
           to: '/users',
@@ -59,7 +64,7 @@
       }
 
       // Check role requirement
-      if (item.roles && !item.roles.some(role => hasRole(role))) {
+      if (item.roles && !item.roles.some((role: string) => hasRole(role))) {
         return false
       }
 

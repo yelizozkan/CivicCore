@@ -192,29 +192,41 @@
                 page-text="{0}-{1} / {2}"
               >
                 <template v-slot:item.status="{ item }">
-                  <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold" :class="getBadgeClass(item.status)">
-                    <div class="w-1.5 h-1.5 rounded-full mr-1.5" :class="getDotClass(item.status)"></div>
+                  <div class="inline-flex items-center px-2.5 py-1 rounded-full text-[13px] font-medium" :class="getBadgeClass(item.status)">
+                    <span class="mr-1.5 text-[10px]">●</span>
                     {{ getStatusText(item.status) }}
                   </div>
                 </template>
 
                 <template v-slot:item.createdAt="{ item }">
-                  <span class="text-[14px] text-gray-600">{{ new Date(item.createdAt).toLocaleDateString() }}</span>
+                  <span class="text-[14px] text-[#374151]">{{ new Date(item.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' }) }}</span>
                 </template>
 
                  <template v-slot:item.firstName="{ item }">
                   <div class="flex items-center gap-3">
-                    <v-avatar size="32" class="bg-gray-100 border border-gray-200">
-                      <span class="text-xs font-bold text-gray-500">{{ item.firstName?.charAt(0) || 'U' }}</span>
-                    </v-avatar>
-                    <span class="text-[14px] font-semibold text-slate-800">{{ item.firstName }} {{ item.lastName }}</span>
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold bg-[#eff6ff] text-[#2563eb]">
+                      {{ item.firstName?.charAt(0) || 'U' }}{{ item.lastName?.charAt(0) || '' }}
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="text-[14px] font-semibold text-[#1e293b]">{{ item.firstName }} {{ item.lastName }}</span>
+                      <span class="text-[13px] text-[#64748b]">{{ item.email || '-' }}</span>
+                    </div>
                   </div>
                 </template>
 
+                <template v-slot:item.phone="{ item }">
+                  <span class="text-[14px] text-[#374151]">{{ item.mobilePhone || item.phone || '-' }}</span>
+                </template>
+
                  <template v-slot:item.actions="{ item }">
-                  <button class="text-gray-400 hover:text-gray-600 transition-colors">
-                     <v-icon size="20">mdi-dots-horizontal</v-icon>
-                  </button>
+                  <div class="flex items-center justify-end gap-2">
+                    <button class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-white hover:shadow-sm hover:border-gray-300 transition-all flex items-center justify-center">
+                      <v-icon size="18">mdi-download-outline</v-icon>
+                    </button>
+                    <button class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-white hover:shadow-sm hover:border-gray-300 transition-all flex items-center justify-center">
+                      <v-icon size="18">mdi-eye-outline</v-icon>
+                    </button>
+                  </div>
                 </template>
                 
                 <template v-slot:no-data>
@@ -320,38 +332,28 @@ const stats = reactive({
 })
 
 const headers: any[] = [
-  { title: 'Başvuru Sahibi', key: 'firstName', align: 'start' },
-  { title: 'Tarih', key: 'createdAt', align: 'start' },
-  { title: 'Durum', key: 'status', align: 'start' },
-  { title: 'İşlem', key: 'actions', align: 'end', sortable: false },
+  { title: 'BAŞVURU SAHİBİ', key: 'firstName', align: 'start', sortable: false },
+  { title: 'TELEFON', key: 'phone', align: 'start', sortable: false },
+  { title: 'BAŞVURU TARİHİ', key: 'createdAt', align: 'start', sortable: false },
+  { title: 'DURUM', key: 'status', align: 'start', sortable: false },
+  { title: 'İŞLEM', key: 'actions', align: 'end', sortable: false },
 ]
 
 // Custom Badge Styling Logic for Target Component Design
 const getBadgeClass = (status: MembershipStatus) => {
   switch (status) {
     case MembershipStatus.Approved: 
-      return 'bg-green-100 text-green-700 border border-green-200'
+      return 'bg-[#dcfce7] text-[#166534]'
     case MembershipStatus.Pending: 
-      return 'bg-amber-100 text-amber-700 border border-amber-200'
+      return 'bg-[#fef3c7] text-[#92400e]'
     case MembershipStatus.Rejected: 
-      return 'bg-red-100 text-red-700 border border-red-200'
+      return 'bg-[#fee2e2] text-[#991b1b]'
     case MembershipStatus.PreApproved: 
-      return 'bg-blue-100 text-blue-700 border border-blue-200'
+      return 'bg-blue-100 text-blue-800'
     case MembershipStatus.Suspended: 
-      return 'bg-gray-100 text-gray-700 border border-gray-200'
+      return 'bg-gray-100 text-gray-800'
     default: 
-      return 'bg-gray-100 text-gray-700 border border-gray-200'
-  }
-}
-
-const getDotClass = (status: MembershipStatus) => {
-  switch (status) {
-    case MembershipStatus.Approved: return 'bg-green-500'
-    case MembershipStatus.Pending: return 'bg-amber-500'
-    case MembershipStatus.Rejected: return 'bg-red-500'
-    case MembershipStatus.PreApproved: return 'bg-blue-500'
-    case MembershipStatus.Suspended: return 'bg-gray-500'
-    default: return 'bg-gray-500'
+      return 'bg-gray-100 text-gray-800'
   }
 }
 
@@ -420,9 +422,36 @@ const fetchDashboardData = async () => {
     stats.overdueCount = overduePayments.length
 
     // Update Recent Applications (Pending ones, limit 5)
-    recentApplications.value = pendingMembers
-      .sort((a: Membership, b: Membership) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .slice(0, 5)
+    // Temporary mock data for testing table styles
+    recentApplications.value = [
+      {
+        id: 1,
+        firstName: 'Ali',
+        lastName: 'Yılmaz',
+        email: 'ali.yilmaz@example.com',
+        mobilePhone: '+90 532 123 45 67',
+        status: MembershipStatus.Pending,
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: 2,
+        firstName: 'Ayşe',
+        lastName: 'Demir',
+        email: 'ayse.demir@example.com',
+        mobilePhone: '+90 533 987 65 43',
+        status: MembershipStatus.Approved,
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: 3,
+        firstName: 'Mehmet',
+        lastName: 'Kaya',
+        email: 'mehmet.kaya@example.com',
+        mobilePhone: '+90 534 555 44 33',
+        status: MembershipStatus.Rejected,
+        createdAt: new Date().toISOString()
+      }
+    ] as any[]
 
   } catch (error) {
     console.error('Error fetching dashboard data:', error)
@@ -457,15 +486,13 @@ definePageMeta({
   font-size: 12px !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
-  letter-spacing: 0.05em;
-  padding: 16px 24px !important;
+  letter-spacing: 0.5px !important;
+  padding: 12px 16px !important;
   border-bottom: 1px solid #f1f5f9 !important;
 }
 :deep(.custom-primestay-table .v-table__wrapper > table > tbody > tr > td) {
-  padding: 12px 24px !important;
-  font-size: 14px !important;
-  color: #1e293b !important;
-  border-bottom: 1px solid #f8fafc !important;
+  padding: 16px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
 }
 :deep(.custom-primestay-table .v-table__wrapper > table > tbody > tr:hover > td) {
   background-color: #f8fafc !important;
