@@ -92,19 +92,47 @@
             
             <!-- Durum Kartları -->
             <div class="mt-6 space-y-3">
-              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
-                <div>
-                  <p class="text-xs text-slate-500">Üyelik Durumu</p>
-                  <p class="text-sm font-semibold text-slate-800">{{ getStatusText(member.status) }}</p>
+              <!-- When status is Pending -->
+              <template v-if="member.status === 0">
+                <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl">
+                  <p class="text-xs text-amber-600 font-medium">Başvuru İncelemede</p>
+                  <p class="text-sm text-amber-800">Başvuru tarihi: {{ formatDate(member.createdDate || member.createdAt) }}</p>
                 </div>
-              </div>
+              </template>
+
+              <!-- When status is PreApproved -->
+              <template v-else-if="member.status === 1">
+                <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl">
+                  <p class="text-xs text-blue-600 font-medium">Ödeme Bekleniyor</p>
+                  <p class="text-sm text-blue-800">Aidat: ₺{{ member.paymentAmount || 'Belirtilmedi' }}</p>
+                </div>
+              </template>
+
+              <!-- When status is Approved -->
+              <template v-else-if="member.status === 2">
+                <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+                  <p class="text-xs text-emerald-600 font-medium">Aktif Üye</p>
+                  <p class="text-sm text-emerald-800">Üyelik: {{ formatDate(member.approvedDate || member.createdDate || member.createdAt) }}</p>
+                </div>
+              </template>
+
+              <!-- When status is Rejected -->
+              <template v-else-if="member.status === 3">
+                <div class="p-3 bg-red-50 border border-red-200 rounded-xl">
+                  <p class="text-xs text-red-600 font-medium">Başvuru Reddedildi</p>
+                </div>
+              </template>
+
               <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
                 <div>
                   <p class="text-xs text-slate-500">Aidat</p>
-                  <p class="text-sm font-semibold text-slate-800">₺{{ member.paymentAmount || 0 }}</p>
+                  <p class="text-sm font-semibold text-slate-800">
+                    {{ member.status === 0 ? '-' : '₺' + (member.paymentAmount || 0) }}
+                  </p>
                 </div>
-                <span v-if="member.paymentReceivedDate || member.status === 2" class="text-emerald-600 text-xs font-medium">Ödendi</span>
-                <span v-else class="text-amber-600 text-xs font-medium">Bekliyor</span>
+                <span :class="getPaymentStatus(member).class" class="text-xs font-medium">
+                  {{ getPaymentStatus(member).text }}
+                </span>
               </div>
             </div>
           </div>
@@ -226,6 +254,77 @@
       </div>
 
     </div>
+
+    <!-- Payment Modal -->
+    <v-dialog v-model="showPaymentModal" max-width="420" persistent>
+      <v-card class="rounded-xl">
+        <!-- Header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <v-icon color="blue" size="20">mdi-cash-check</v-icon>
+            </div>
+            <h3 class="text-[17px] font-semibold text-slate-800">Ödeme Kaydet</h3>
+          </div>
+          <v-btn icon variant="text" size="small" @click="closePaymentModal">
+            <v-icon size="20">mdi-close</v-icon>
+          </v-btn>
+        </div>
+        
+        <!-- Content -->
+        <div class="px-6 py-5">
+          <!-- Ödeme Tutarı -->
+          <div class="mb-4">
+            <label class="block text-[13px] font-medium text-slate-700 mb-1.5">Ödeme Tutarı</label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">₺</span>
+              <input 
+                v-model="paymentForm.amount"
+                type="number"
+                class="w-full pl-8 pr-4 py-2.5 border border-slate-200 rounded-lg text-[14px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                placeholder="0.00"
+              />
+            </div>
+          </div>
+          
+          <!-- Ödeme Tarihi -->
+          <div>
+            <label class="block text-[13px] font-medium text-slate-700 mb-1.5">Ödeme Tarihi</label>
+            <input 
+              v-model="paymentForm.date"
+              type="date"
+              class="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-[14px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            />
+          </div>
+
+          <!-- Error Alert -->
+          <div v-if="paymentError" class="mt-4 p-3 bg-red-50 text-red-600 text-[13px] font-medium rounded-lg border border-red-100">
+            {{ paymentError }}
+          </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-100 bg-slate-50 rounded-b-xl">
+          <v-btn 
+            variant="text" 
+            color="grey-darken-1"
+            class="text-none font-medium"
+            @click="closePaymentModal"
+          >
+            İptal
+          </v-btn>
+          <v-btn 
+            color="#2563eb"
+            class="text-white text-none font-medium px-4"
+            elevation="0"
+            :loading="paymentLoading"
+            @click="submitPayment"
+          >
+            Kaydet
+          </v-btn>
+        </div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -270,12 +369,98 @@ onMounted(async () => {
   }
 })
 
-// Empty placeholder functions for missing actions
+// Actions
 const approveMember = () => { console.log('Başvuruyu onayla tıklandı') }
 const rejectMember = () => { console.log('Reddet tıklandı') }
-const recordPayment = () => { console.log('Ödeme kaydet tıklandı') }
 
-// Utilities
+// Payment Logic
+const showPaymentModal = ref(false)
+const paymentLoading = ref(false)
+const paymentError = ref('')
+const paymentForm = ref({ amount: 0, date: new Date().toISOString().split('T')[0] })
+
+const recordPayment = () => {
+  paymentError.value = ''
+  paymentForm.value.amount = member.value?.paymentAmount || 0
+  paymentForm.value.date = new Date().toISOString().split('T')[0]
+  showPaymentModal.value = true
+}
+
+const closePaymentModal = () => {
+  showPaymentModal.value = false
+}
+
+const submitPayment = async () => {
+  if (!paymentForm.value.amount || paymentForm.value.amount <= 0) {
+    paymentError.value = 'Lütfen geçerli bir ödeme tutarı giriniz.'
+    return
+  }
+  if (!paymentForm.value.date) {
+    paymentError.value = 'Lütfen ödeme tarihini seçiniz.'
+    return
+  }
+
+  paymentLoading.value = true
+  paymentError.value = ''
+
+  try {
+    // Call the status update endpoint
+    // Passing status = 2 (Approved), amount, and date
+    // (Ensure your backend accepts these params in UpdateMembershipStatusDto)
+    // await updateMembershipStatus({
+    //   membershipId: member.value.id,
+    //   status: 2,
+    //   paymentAmount: paymentForm.value.amount,
+    //   paymentReceivedDate: paymentForm.value.date + 'T00:00:00Z'
+    // })
+    console.log('API call simulation: Payment recorded', {
+      membershipId: member.value.id,
+      status: 2,
+      paymentAmount: paymentForm.value.amount,
+      paymentReceivedDate: paymentForm.value.date + 'T00:00:00Z'
+    })
+
+    // Update local state temporarily immediately without reloading
+    if (member.value) {
+      member.value.status = 2 // Approved
+      member.value.paymentAmount = paymentForm.value.amount
+      member.value.paymentReceivedDate = paymentForm.value.date + 'T00:00:00Z'
+      if (!member.value.approvedDate) {
+         member.value.approvedDate = new Date().toISOString()
+      }
+    }
+    closePaymentModal()
+  } catch (err: any) {
+     paymentError.value = err?.response?.data?.message || 'Ödeme kaydedilirken bir hata oluştu.'
+     console.error(err)
+  } finally {
+     paymentLoading.value = false
+  }
+}
+
+
+// Determine payment status
+const getPaymentStatus = (member: any) => {
+  if (!member) return { text: '-', class: 'text-slate-400' }
+  // If Approved and there is a payment date → Paid
+  if (member.status === 2 && member.paymentReceivedDate) {
+    return { text: 'Ödendi', class: 'text-emerald-600' }
+  }
+  // If PreApproved → Waiting for Payment
+  if (member.status === 1) {
+    return { text: 'Bekliyor', class: 'text-amber-600' }
+  }
+  // If Pending → Not yet at the payment stage
+  if (member.status === 0) {
+    return { text: '-', class: 'text-slate-400' }
+  }
+  // If Rejected
+  if (member.status === 3) {
+    return { text: '-', class: 'text-slate-400' }
+  }
+  return { text: '-', class: 'text-slate-400' }
+}
+
 const getInitials = (fullName: string) => {
   if (!fullName) return 'U'
   const names = fullName.trim().split(' ')

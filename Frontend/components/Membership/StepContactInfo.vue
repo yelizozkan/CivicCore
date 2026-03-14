@@ -6,43 +6,70 @@
 
     <div class="input-group">
       <label class="input-label">E-posta Adresi <span class="required">*</span></label>
-      <input v-model="localData.email" type="email" class="input-field" placeholder="ornek@email.com" required />
+      <input 
+        v-model="localData.email" 
+        type="email" 
+        class="input-field" 
+        :class="{ 'border-red-500 focus:border-red-500 focus:ring-red-100': errors.email }"
+        placeholder="ornek@email.com" 
+      />
+      <div v-if="errors.email" class="text-red-500 text-sm mt-1">{{ errors.email }}</div>
     </div>
 
     <div class="form-grid">
       <div class="input-group">
         <label class="input-label">Cep Telefonu <span class="required">*</span></label>
-        <div class="phone-input-wrapper">
-          <span class="phone-prefix">
+        <div class="phone-input-wrapper" :class="{ 'has-error': errors.mobilePhone }">
+          <span class="phone-prefix" :class="{ 'border-red-500 bg-red-50': errors.mobilePhone }">
             <span class="fi fi-tr"></span>
             +90
           </span>
           <input 
             v-model="displayPhone"
             type="tel" 
-            class="input-field phone-field" 
+            class="input-field phone-field !border-l-0" 
+            :class="{ 'border-red-500 focus:border-red-500 focus:ring-red-100': errors.mobilePhone }"
             placeholder="5XX XXX XX XX" 
             @input="handlePhoneInput"
             maxlength="13"
-            required 
           />
         </div>
+        <div v-if="errors.mobilePhone" class="text-red-500 text-sm mt-1">{{ errors.mobilePhone }}</div>
       </div>
 
       <div class="input-group">
         <label class="input-label">İş Telefonu</label>
-        <input v-model="localData.workPhone" type="tel" class="input-field" placeholder="İş telefonu (opsiyonel)" />
+        <input 
+          v-model="localData.workPhone" 
+          type="tel" 
+          class="input-field" 
+          :class="{ 'border-red-500 focus:border-red-500 focus:ring-red-100': errors.workPhone }"
+          placeholder="İş telefonu (opsiyonel)" 
+        />
+        <div v-if="errors.workPhone" class="text-red-500 text-sm mt-1">{{ errors.workPhone }}</div>
       </div>
     </div>
 
     <div class="input-group">
       <label class="input-label">İkamet Adresi <span class="required">*</span></label>
-      <textarea v-model="localData.residenceAddress" class="input-field textarea-field" placeholder="Ev adresiniz" rows="2" required></textarea>
+      <textarea 
+        v-model="localData.residenceAddress" 
+        class="input-field textarea-field" 
+        :class="{ 'border-red-500 focus:border-red-500 focus:ring-red-100': errors.residenceAddress }"
+        placeholder="Ev adresiniz" 
+        rows="2"
+      ></textarea>
+      <div v-if="errors.residenceAddress" class="text-red-500 text-sm mt-1">{{ errors.residenceAddress }}</div>
     </div>
 
     <div class="input-group">
       <label class="input-label">İş Adresi</label>
-      <textarea v-model="localData.workplaceAddress" class="input-field textarea-field" placeholder="İş adresiniz (opsiyonel)" rows="2"></textarea>
+      <textarea 
+        v-model="localData.workplaceAddress" 
+        class="input-field textarea-field" 
+        placeholder="İş adresiniz (opsiyonel)" 
+        rows="2"
+      ></textarea>
     </div>
   </div>
 </template>
@@ -110,17 +137,33 @@ watch(() => props.modelValue, (newVal) => {
   }
 }, { deep: true })
 
+const errors = ref<Record<string, string>>({})
+
 const validate = (): boolean => {
-  if (!localData.email?.trim()) return false
-  if (!localData.mobilePhone?.trim() || localData.mobilePhone.length < 13) return false // +90 + 10 digits
-  if (!localData.residenceAddress?.trim()) return false
+  errors.value = {}
+  
+  if (!localData.email?.trim()) {
+    errors.value.email = 'E-posta adresi zorunludur'
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(localData.email)) {
+    errors.value.email = 'Geçerli bir e-posta adresi giriniz'
+  }
+  
+  if (!localData.mobilePhone?.trim()) {
+    errors.value.mobilePhone = 'Cep telefonu zorunludur'
+  } else if (localData.mobilePhone.length < 13) {
+    errors.value.mobilePhone = 'Geçerli bir telefon numarası giriniz'
+  }
+  
+  if (!localData.residenceAddress?.trim()) {
+    errors.value.residenceAddress = 'İkamet adresi zorunludur'
+  }
 
   // İş telefonu girilmişse format kontrolü (opsiyonel)
   if (localData.workPhone?.trim() && localData.workPhone.trim().length < 7) {
-    return false
+    errors.value.workPhone = 'Geçerli bir iş telefonu giriniz'
   }
   
-  return true
+  return Object.keys(errors.value).length === 0
 }
 
 defineExpose({ validate })
@@ -156,7 +199,7 @@ defineExpose({ validate })
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 20px 24px;
 }
 
 @media (max-width: 640px) {
@@ -166,15 +209,16 @@ defineExpose({ validate })
 }
 
 .input-group {
+  display: block;
   margin-bottom: 20px;
 }
 
 .input-label {
   display: block;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   color: #334155;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .required {
@@ -183,8 +227,8 @@ defineExpose({ validate })
 
 .input-field {
   width: 100%;
-  padding: 14px 16px;
-  border: 1px solid #d1d5db;
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
   border-radius: 12px;
   font-size: 16px;
   color: #1e293b;
@@ -194,8 +238,8 @@ defineExpose({ validate })
 }
 
 .input-field:focus {
-  border-color: #22c55e;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .input-field::placeholder {
@@ -245,12 +289,12 @@ defineExpose({ validate })
 }
 
 .phone-field:focus {
-  border-color: #22c55e;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .phone-input-wrapper:focus-within .phone-prefix {
-  border-color: #22c55e;
-  background: #f0fdf4;
+  border-color: #3b82f6;
+  background: #eff6ff;
 }
 </style>

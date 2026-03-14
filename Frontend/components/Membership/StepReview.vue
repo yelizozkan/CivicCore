@@ -25,9 +25,9 @@
           <span class="label">Doğum</span>
           <span class="value">{{ formData.birthPlace }} - {{ formatDate(formData.birthDate) }}</span>
         </div>
-        <div class="info-item">
-          <span class="label">Kan Grubu</span>
-          <span class="value">{{ formData.bloodType }}</span>
+        <div class="summary-group">
+          <span class="summary-label">Kan Grubu</span>
+          <span class="summary-value badge badge-blue">{{ formData.bloodType }}</span>
         </div>
       </div>
     </div>
@@ -77,13 +77,13 @@
         <h3>Onaylar</h3>
       </div>
       <div class="consent-list">
-        <div class="consent-item" :class="{ approved: formData.kvkkAccepted }">
-          <span class="check">{{ formData.kvkkAccepted ? '✓' : '○' }}</span>
-          <span>KVKK Aydınlatma Metni Okundu ve Onaylandı</span>
+        <div class="status-box" :class="formData.kvkkAccepted ? 'status-success' : 'status-pending'">
+          <span class="status-icon">{{ formData.kvkkAccepted ? '✓' : '!' }}</span>
+          <span class="status-text">{{ formData.kvkkAccepted ? 'Onaylandı' : 'Onay Bekliyor' }}</span>
         </div>
-        <div class="consent-item" :class="{ approved: formData.explicitConsentAccepted }">
-          <span class="check">{{ formData.explicitConsentAccepted ? '✓' : '○' }}</span>
-          <span>Açık Rıza Metni Okundu ve Onaylandı</span>
+        <div class="status-box" :class="formData.explicitConsentAccepted ? 'status-success' : 'status-pending'">
+          <span class="status-icon">{{ formData.explicitConsentAccepted ? '✓' : '!' }}</span>
+          <span class="status-text">{{ formData.explicitConsentAccepted ? 'Onaylandı' : 'Onay Bekliyor' }}</span>
         </div>
       </div>
     </div>

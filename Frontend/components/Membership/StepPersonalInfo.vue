@@ -7,63 +7,117 @@
     <div class="form-grid">
       <div class="input-group">
         <label class="input-label">Ad <span class="required">*</span></label>
-        <input v-model="localData.firstName" type="text" class="input-field" placeholder="Adınız" required />
+        <input 
+          v-model="localData.firstName" 
+          type="text" 
+          class="input-field" 
+          :class="{ 'border-red-500 focus:border-red-500 focus:ring-red-100': errors.firstName }"
+          placeholder="Adınız" 
+        />
+        <div v-if="errors.firstName" class="text-red-500 text-sm mt-1">{{ errors.firstName }}</div>
       </div>
 
       <div class="input-group">
         <label class="input-label">Soyad <span class="required">*</span></label>
-        <input v-model="localData.lastName" type="text" class="input-field" placeholder="Soyadınız" required />
+        <input 
+          v-model="localData.lastName" 
+          type="text" 
+          class="input-field" 
+          :class="{ 'border-red-500 focus:border-red-500 focus:ring-red-100': errors.lastName }"
+          placeholder="Soyadınız" 
+        />
+        <div v-if="errors.lastName" class="text-red-500 text-sm mt-1">{{ errors.lastName }}</div>
       </div>
     </div>
 
     <div class="input-group">
       <label class="input-label">T.C. Kimlik Numarası <span class="required">*</span></label>
-      <input v-model="localData.identityNumber" type="text" class="input-field" placeholder="11 haneli kimlik numarası" maxlength="11" required />
+      <input 
+        v-model="localData.identityNumber" 
+        type="text" 
+        class="input-field" 
+        :class="{ 'border-red-500 focus:border-red-500 focus:ring-red-100': errors.identityNumber }"
+        placeholder="11 haneli kimlik numarası" 
+        maxlength="11" 
+      />
+      <div v-if="errors.identityNumber" class="text-red-500 text-sm mt-1">{{ errors.identityNumber }}</div>
     </div>
 
     <div class="form-grid">
       <div class="input-group">
         <label class="input-label">Anne Adı <span class="required">*</span></label>
-        <input v-model="localData.motherName" type="text" class="input-field" placeholder="Anne adı" required />
+        <input 
+          v-model="localData.motherName" 
+          type="text" 
+          class="input-field" 
+          :class="{ 'border-red-500 focus:border-red-500 focus:ring-red-100': errors.motherName }"
+          placeholder="Anne adı" 
+        />
+        <div v-if="errors.motherName" class="text-red-500 text-sm mt-1">{{ errors.motherName }}</div>
       </div>
 
       <div class="input-group">
         <label class="input-label">Baba Adı <span class="required">*</span></label>
-        <input v-model="localData.fatherName" type="text" class="input-field" placeholder="Baba adı" required />
+        <input 
+          v-model="localData.fatherName" 
+          type="text" 
+          class="input-field" 
+          :class="{ 'border-red-500 focus:border-red-500 focus:ring-red-100': errors.fatherName }"
+          placeholder="Baba adı" 
+        />
+        <div v-if="errors.fatherName" class="text-red-500 text-sm mt-1">{{ errors.fatherName }}</div>
       </div>
     </div>
 
     <div class="form-grid">
       <div class="input-group">
         <label class="input-label">Doğum Yeri <span class="required">*</span></label>
-        <input v-model="localData.birthPlace" type="text" class="input-field" placeholder="Doğum yeri" required />
+        <input 
+          v-model="localData.birthPlace" 
+          type="text" 
+          class="input-field" 
+          :class="{ 'border-red-500 focus:border-red-500 focus:ring-red-100': errors.birthPlace }"
+          placeholder="Doğum yeri" 
+        />
+        <div v-if="errors.birthPlace" class="text-red-500 text-sm mt-1">{{ errors.birthPlace }}</div>
       </div>
 
       <div class="input-group">
         <label class="input-label">Doğum Tarihi <span class="required">*</span></label>
-        <input v-model="localData.birthDate" type="date" class="input-field" required />
+        <input 
+          v-model="localData.birthDate" 
+          type="date" 
+          class="input-field" 
+          :class="{ 'border-red-500 focus:border-red-500 focus:ring-red-100': errors.birthDate }"
+        />
+        <div v-if="errors.birthDate" class="text-red-500 text-sm mt-1">{{ errors.birthDate }}</div>
       </div>
     </div>
 
     <div class="input-group">
       <label class="input-label">Kan Grubu <span class="required">*</span></label>
-      <select v-model="localData.bloodType" class="input-field select-field" required>
-        <option value="" disabled>Seçiniz</option>
-        <option value="A+">A Rh+</option>
-        <option value="A-">A Rh-</option>
-        <option value="B+">B Rh+</option>
-        <option value="B-">B Rh-</option>
-        <option value="AB+">AB Rh+</option>
-        <option value="AB-">AB Rh-</option>
-        <option value="0+">0 Rh+</option>
-        <option value="0-">0 Rh-</option>
+      <select 
+        v-model="localData.bloodType" 
+        class="input-field select-field focus:border-slate-400 focus:ring-2 focus:ring-slate-100 transition-all appearance-none cursor-pointer" 
+        :class="{ 'border-red-500 focus:border-red-500 focus:ring-red-100': errors.bloodType }"
+      >
+        <option value="" disabled class="text-slate-400">Kan grubunuzu seçiniz</option>
+        <option value="A Rh+">A Rh+</option>
+        <option value="A Rh-">A Rh-</option>
+        <option value="B Rh+">B Rh+</option>
+        <option value="B Rh-">B Rh-</option>
+        <option value="AB Rh+">AB Rh+</option>
+        <option value="AB Rh-">AB Rh-</option>
+        <option value="0 Rh+">0 Rh+</option>
+        <option value="0 Rh-">0 Rh-</option>
       </select>
+      <div v-if="errors.bloodType" class="text-red-500 text-sm mt-1">{{ errors.bloodType }}</div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
+import { reactive, watch, ref } from 'vue'
 
 interface FormData {
   firstName: string
@@ -90,16 +144,39 @@ watch(() => props.modelValue, (newVal) => {
   Object.assign(localData, newVal)
 }, { deep: true })
 
+const errors = ref<Record<string, string>>({})
+
 const validate = (): boolean => {
-  if (!localData.firstName?.trim()) return false
-  if (!localData.lastName?.trim()) return false
-  if (!localData.identityNumber?.trim() || localData.identityNumber.length !== 11) return false
-  if (!localData.motherName?.trim()) return false
-  if (!localData.fatherName?.trim()) return false
-  if (!localData.birthPlace?.trim()) return false
-  if (!localData.birthDate) return false
-  if (!localData.bloodType) return false
-  return true
+  errors.value = {}
+  
+  if (!localData.firstName?.trim()) {
+    errors.value.firstName = 'Ad alanı zorunludur'
+  }
+  if (!localData.lastName?.trim()) {
+    errors.value.lastName = 'Soyad alanı zorunludur'
+  }
+  if (!localData.identityNumber?.trim()) {
+    errors.value.identityNumber = 'TC Kimlik No zorunludur'
+  } else if (localData.identityNumber.length !== 11) {
+    errors.value.identityNumber = 'TC Kimlik No 11 haneli olmalıdır'
+  }
+  if (!localData.motherName?.trim()) {
+    errors.value.motherName = 'Anne adı zorunludur'
+  }
+  if (!localData.fatherName?.trim()) {
+    errors.value.fatherName = 'Baba adı zorunludur'
+  }
+  if (!localData.birthPlace?.trim()) {
+    errors.value.birthPlace = 'Doğum yeri zorunludur'
+  }
+  if (!localData.birthDate) {
+    errors.value.birthDate = 'Doğum tarihi zorunludur'
+  }
+  if (!localData.bloodType) {
+    errors.value.bloodType = 'Kan grubu seçiniz'
+  }
+  
+  return Object.keys(errors.value).length === 0
 }
 
 defineExpose({ validate })
@@ -135,7 +212,7 @@ defineExpose({ validate })
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 20px 24px;
 }
 
 @media (max-width: 640px) {
@@ -145,15 +222,16 @@ defineExpose({ validate })
 }
 
 .input-group {
+  display: block;
   margin-bottom: 20px;
 }
 
 .input-label {
   display: block;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   color: #334155;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .required {
@@ -162,8 +240,8 @@ defineExpose({ validate })
 
 .input-field {
   width: 100%;
-  padding: 14px 16px;
-  border: 1px solid #d1d5db;
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
   border-radius: 12px;
   font-size: 16px;
   color: #1e293b;
@@ -173,8 +251,8 @@ defineExpose({ validate })
 }
 
 .input-field:focus {
-  border-color: #22c55e;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .input-field::placeholder {
@@ -183,11 +261,10 @@ defineExpose({ validate })
 
 .select-field {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-  background-repeat: no-repeat;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
   background-position: right 12px center;
-  background-size: 16px;
-  padding-right: 40px;
+  background-repeat: no-repeat;
+  background-size: 20px;
   cursor: pointer;
 }
 
@@ -196,9 +273,8 @@ defineExpose({ validate })
   color: #1e293b;
 }
 
-.select-field option:checked,
-.select-field option:hover {
-  background-color: #dcfce7;
-  color: #166534;
+.select-field option:checked {
+  background-color: #f1f5f9;
+  color: #1e293b;
 }
 </style>

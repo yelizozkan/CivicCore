@@ -68,8 +68,8 @@ useHead({
   right: 0;
   bottom: 0;
   background-image: 
-    radial-gradient(circle at 15% 15%, rgba(34, 197, 94, 0.04) 0%, transparent 45%),
-    radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.04) 0%, transparent 45%);
+    radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.04) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(37, 99, 235, 0.04) 0%, transparent 45%);
   pointer-events: none;
 }
 
@@ -83,11 +83,11 @@ useHead({
 
 .register-card {
   background: linear-gradient(180deg, #ffffff 0%, #fdfffe 100%);
-  border: 1px solid rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.08);
   box-shadow: 
-    0 4px 6px rgba(34, 197, 94, 0.02),
+    0 4px 6px rgba(59, 130, 246, 0.02),
     0 12px 24px rgba(0, 0, 0, 0.03),
-    0 24px 48px rgba(34, 197, 94, 0.04);
+    0 24px 48px rgba(59, 130, 246, 0.04);
   padding: 48px;
   border-radius: 24px;
 }
@@ -105,15 +105,15 @@ useHead({
   width: 80px;
   height: 80px;
   border-radius: 20px;
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   margin-bottom: 24px;
-  box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
   animation: pulse 3s infinite;
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3); }
-  50% { transform: scale(1.03); box-shadow: 0 15px 35px rgba(34, 197, 94, 0.4); }
+  0%, 100% { transform: scale(1); box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3); }
+  50% { transform: scale(1.03); box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4); }
 }
 
 .register-title {

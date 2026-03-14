@@ -82,27 +82,27 @@ const handleStepClick = (index: number) => {
   border: 2px solid #e2e8f0;
 }
 
-/* Aktif adım - Yeşil */
+/* Aktif adım - Mavi */
 .step-item.active .step-circle {
   background: white;
-  color: #22c55e;
-  border-color: #22c55e;
-  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
+  color: #3b82f6;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
   transform: scale(1.1);
 }
 
-/* Tamamlanmış adım - Yeşil */
+/* Tamamlanmış adım - Mavi */
 .step-item.completed .step-circle {
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
-  border-color: #22c55e;
+  border-color: #3b82f6;
 }
 
 .step-item.completed:hover .step-circle {
-  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-  border-color: #16a34a;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  border-color: #2563eb;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
 }
 
 .check-icon {
@@ -125,10 +125,10 @@ const handleStepClick = (index: number) => {
 }
 
 .step-item.completed .step-label {
-  color: #22c55e;
+  color: #3b82f6;
 }
 
-/* Çizgi - Yeşil gradient */
+/* Çizgi - Mavi gradient */
 .step-line {
   position: absolute;
   top: 22px;
@@ -142,7 +142,7 @@ const handleStepClick = (index: number) => {
 }
 
 .step-line.completed {
-  background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
+  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
 }
 
 @media (max-width: 768px) {

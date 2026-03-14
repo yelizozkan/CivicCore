@@ -139,9 +139,9 @@ onMounted(async () => {
   right: 0;
   bottom: 0;
   background-image: 
-    radial-gradient(circle at 20% 20%, rgba(34, 197, 94, 0.06) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(74, 222, 128, 0.04) 0%, transparent 40%);
+    radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(37, 99, 235, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(96, 165, 250, 0.04) 0%, transparent 40%);
   pointer-events: none;
 }
 
@@ -158,8 +158,8 @@ onMounted(async () => {
 .spinner {
   width: 48px;
   height: 48px;
-  border: 3px solid rgba(34, 197, 94, 0.2);
-  border-top-color: #22c55e;
+  border: 3px solid rgba(59, 130, 246, 0.2);
+  border-top-color: #3b82f6;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -210,7 +210,7 @@ onMounted(async () => {
 .home-link {
   display: inline-block;
   padding: 12px 24px;
-  background: linear-gradient(135deg, #22c55e 0%, #14b8a6 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
   color: white;
   text-decoration: none;
   border-radius: 10px;
@@ -220,7 +220,7 @@ onMounted(async () => {
 
 .home-link:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
 }
 
 /* Register Container */

@@ -5,7 +5,7 @@
     </div>
 
     <!-- KVKK Consent -->
-    <div class="consent-card" :class="{ 'approved': localData.kvkkAccepted }">
+    <div class="consent-card" :class="{ 'approved': localData.kvkkAccepted, 'border-red-400': errors.kvkkAccepted }">
       <div class="consent-checkbox clickable-area" @click.prevent="toggleConsent('kvkk')">
         <div class="checkbox-wrapper">
           <input type="checkbox" :checked="localData.kvkkAccepted" readonly />
@@ -19,9 +19,10 @@
       </div>
       <span v-if="localData.kvkkAccepted" class="approved-badge">✓ Onaylandı</span>
     </div>
+    <div v-if="errors.kvkkAccepted" class="text-red-500 text-sm mt-1 mb-4 ml-1">{{ errors.kvkkAccepted }}</div>
 
     <!-- Explicit Consent -->
-    <div class="consent-card" :class="{ 'approved': localData.explicitConsentAccepted }">
+    <div class="consent-card" :class="{ 'approved': localData.explicitConsentAccepted, 'border-red-400': errors.explicitConsentAccepted }">
       <div class="consent-checkbox clickable-area" @click.prevent="toggleConsent('explicit')">
         <div class="checkbox-wrapper">
           <input type="checkbox" :checked="localData.explicitConsentAccepted" readonly />
@@ -35,6 +36,7 @@
       </div>
       <span v-if="localData.explicitConsentAccepted" class="approved-badge">✓ Onaylandı</span>
     </div>
+    <div v-if="errors.explicitConsentAccepted" class="text-red-500 text-sm mt-1 mb-4 ml-1">{{ errors.explicitConsentAccepted }}</div>
 
     <div class="info-box">
       <p class="helper-text">Belgeleri okumak için üzerlerine tıklayın. Onay vermek için belgeyi sonuna kadar okumanız gerekmektedir.</p>
@@ -275,10 +277,19 @@ const toggleConsent = (type: 'kvkk' | 'explicit') => {
 }
 
 // Validation
+const errors = ref<Record<string, string>>({})
+
 const validate = (): boolean => {
-  if (!localData.kvkkAccepted) return false
-  if (!localData.explicitConsentAccepted) return false
-  return true
+  errors.value = {}
+
+  if (!localData.kvkkAccepted) {
+    errors.value.kvkkAccepted = 'KVKK Aydınlatma Metnini onaylamanız gerekmektedir'
+  }
+  if (!localData.explicitConsentAccepted) {
+    errors.value.explicitConsentAccepted = 'Açık Rıza Beyanını onaylamanız gerekmektedir'
+  }
+  
+  return Object.keys(errors.value).length === 0
 }
 
 defineExpose({ validate })
@@ -392,7 +403,7 @@ defineExpose({ validate })
 .link-button {
   background: none;
   border: none;
-  color: #1e40af;
+  color: #3b82f6;
   font-size: 15px;
   font-weight: 600;
   text-decoration: underline;
@@ -403,7 +414,7 @@ defineExpose({ validate })
 }
 
 .link-button:hover {
-  color: #1e3a8a;
+  color: #2563eb;
 }
 
 .approved-badge {
@@ -607,7 +618,7 @@ defineExpose({ validate })
 .accept-button {
   width: 100%;
   padding: 14px 24px;
-  background-color: #1e293b;
+  background-color: #3b82f6;
   color: white;
   border: none;
   border-radius: 10px;
@@ -618,8 +629,8 @@ defineExpose({ validate })
 }
 
 .accept-button:hover:not(:disabled) {
-  background-color: #0f172a;
-  box-shadow: 0 4px 12px rgba(30, 41, 59, 0.25);
+  background-color: #2563eb;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 }
 
 .accept-button:disabled {

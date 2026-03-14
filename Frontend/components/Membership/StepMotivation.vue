@@ -16,11 +16,14 @@
       <textarea 
         v-model="localData.motivationText" 
         class="input-field textarea-field" 
+        :class="{ 'border-red-500 focus:border-red-500 focus:ring-red-100': errors.motivationText }"
         placeholder="Açıklamanızı buraya yazın..."
         rows="8"
-        required
       ></textarea>
-      <div class="char-count" :class="{ 'warning': charCount < 50, 'success': charCount >= 50 }">
+      
+      <div v-if="errors.motivationText" class="text-red-500 text-sm mt-1 mb-1">{{ errors.motivationText }}</div>
+
+      <div class="char-count" :class="{ 'warning': charCount < 50 && charCount > 0, 'success': charCount >= 50 }">
         {{ charCount }} / 500 karakter
         <span v-if="charCount < 50" class="hint">(en az 50 karakter)</span>
         <span v-else class="hint">✓</span>
@@ -30,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, computed } from 'vue'
+import { reactive, watch, computed, ref } from 'vue'
 
 interface FormData {
   motivationText: string
@@ -52,9 +55,18 @@ watch(() => props.modelValue, (newVal) => {
   Object.assign(localData, newVal)
 }, { deep: true })
 
+const errors = ref<Record<string, string>>({})
+
 const validate = (): boolean => {
-  if (!localData.motivationText?.trim() || localData.motivationText.length < 50) return false
-  return true
+  errors.value = {}
+
+  if (!localData.motivationText?.trim()) {
+    errors.value.motivationText = 'Motivasyon alanı zorunludur'
+  } else if (localData.motivationText.length < 50) {
+    errors.value.motivationText = 'Lütfen en az 50 karakter giriniz'
+  }
+  
+  return Object.keys(errors.value).length === 0
 }
 
 defineExpose({ validate })
@@ -88,15 +100,16 @@ defineExpose({ validate })
 }
 
 .input-group {
+  display: block;
   margin-bottom: 20px;
 }
 
 .input-label {
   display: block;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   color: #334155;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .required {
@@ -105,8 +118,8 @@ defineExpose({ validate })
 
 .input-field {
   width: 100%;
-  padding: 14px 16px;
-  border: 1px solid #d1d5db;
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
   border-radius: 12px;
   font-size: 16px;
   color: #1e293b;
@@ -116,8 +129,8 @@ defineExpose({ validate })
 }
 
 .input-field:focus {
-  border-color: #9ca3af;
-  box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.15);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .input-field::placeholder {

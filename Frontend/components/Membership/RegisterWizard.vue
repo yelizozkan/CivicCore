@@ -1,6 +1,6 @@
 <template>
   <div class="wizard-container">
-    <div v-if="isLoading" class="loading-state">
+    <div v-if="isSubmitting && currentStep !== totalSteps" class="loading-state">
       <div class="spinner"></div>
       <p>Başvurunuz işleniyor...</p>
     </div>
@@ -28,20 +28,44 @@
         </Transition>
       </div>
 
-      <div class="button-group">
-        <button v-if="currentStep > 1" type="button" class="btn-back" @click="prevStep">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="15 18 9 12 15 6"></polyline>
+      <div class="flex justify-between items-center mt-10 pt-6 border-t border-slate-200 gap-4">
+        <!-- Geri Butonu -->
+        <button 
+          v-if="currentStep > 1"
+          @click="prevStep"
+          class="flex items-center gap-2 px-6 py-3 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-all text-base font-medium"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
           </svg>
           Geri
         </button>
-        <div v-else class="spacer"></div>
+        <div v-else class="flex-1"></div>
 
-        <button type="button" class="btn-next" @click="handleNext" :disabled="isLoading">
-          <span v-if="isLoading" class="btn-spinner"></span>
-          <template v-else>
-            {{ currentStep === totalSteps ? 'Başvuruyu Tamamla' : 'Devam Et' }}
-          </template>
+        <!-- Son adımda Gönder Butonu -->
+        <button 
+          v-if="currentStep === totalSteps"
+          @click="submitForm"
+          :disabled="isSubmitting"
+          class="flex items-center gap-2 px-8 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 text-white rounded-xl transition-all text-base font-medium shadow-sm ml-auto"
+        >
+          <span v-if="isSubmitting">Gönderiliyor...</span>
+          <span v-else>Başvuruyu Gönder</span>
+          <svg v-if="!isSubmitting" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+        </button>
+
+        <!-- Devam Et Butonu -->
+        <button 
+          v-else
+          @click="handleNext"
+          class="flex items-center gap-2 px-8 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-xl transition-all text-base font-medium shadow-sm ml-auto"
+        >
+          Devam Et
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
         </button>
       </div>
     </div>
@@ -122,14 +146,16 @@ const props = defineProps<{
 //#endregion
 
 //#region Composables
+import { useRouter } from 'vue-router'
 const { createMembership } = useMemberships()
+const router = useRouter()
 //#endregion
 
 //#region Reactive State
 const currentStep = ref(1)
 const totalSteps = 6
 const direction = ref<StepDirection>('right')
-const isLoading = ref(false)
+const isSubmitting = ref(false)
 const showSuccess = ref(false)
 const currentStepRef = ref<any>(null)
 const error = ref('')
@@ -208,8 +234,6 @@ const handleNext = async () => {
     direction.value = 'right'
     currentStep.value++
     scrollToTop()
-  } else {
-    await submitForm()
   }
 }
 
@@ -236,40 +260,48 @@ const handleEdit = (step: number) => {
 }
 
 const submitForm = async () => {
-  isLoading.value = true
+  if (currentStepRef.value && typeof currentStepRef.value.validate === 'function') {
+    const isValid = await currentStepRef.value.validate()
+    if (!isValid) {
+      showError('Lütfen tüm zorunlu alanları doldurun.')
+      return
+    }
+  }
+
+  isSubmitting.value = true
   error.value = ''
   
   try {
-    // Prepare payload matching backend DTO
     const payload = {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      identityNumber: formData.identityNumber,
-      motherName: formData.motherName,
-      fatherName: formData.fatherName,
-      birthPlace: formData.birthPlace,
-      birthDate: formData.birthDate,
-      bloodType: formData.bloodType,
-      educationLevel: formData.educationLevel,
-      profession: formData.profession,
-      workplaceName: formData.workplaceName || null,
-      workplacePosition: formData.workplacePosition || null,
-      mobilePhone: formData.mobilePhone,
-      workPhone: formData.workPhone || null,
-      email: formData.email,
-      residenceAddress: formData.residenceAddress,
-      workplaceAddress: formData.workplaceAddress || null,
-      motivationText: formData.motivationText,
-      kvkkAccepted: formData.kvkkAccepted,
-      explicitConsentAccepted: formData.explicitConsentAccepted
+      tenantGroupId: props.tenantGroupId,
+      membership: {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        identityNumber: formData.identityNumber,
+        motherName: formData.motherName,
+        fatherName: formData.fatherName,
+        birthPlace: formData.birthPlace,
+        birthDate: formData.birthDate,
+        bloodType: formData.bloodType,
+        educationLevel: formData.educationLevel,
+        profession: formData.profession,
+        workplaceName: formData.workplaceName || null,
+        workplacePosition: formData.workplacePosition || null,
+        mobilePhone: formData.mobilePhone,
+        workPhone: formData.workPhone || null,
+        email: formData.email,
+        residenceAddress: formData.residenceAddress,
+        workplaceAddress: formData.workplaceAddress || null,
+        motivationText: formData.motivationText,
+        kvkkAccepted: formData.kvkkAccepted,
+        explicitConsentAccepted: formData.explicitConsentAccepted
+      }
     }
 
-    // 🔥 Use tenantGroupId from props (resolved from slug)
     await createMembership(payload, props.tenantGroupId)
-
-    // Success
-    showSuccess.value = true
-    scrollToTop()
+    
+    // Yönlendirme
+    router.push('/membership/success')
     
   } catch (err: any) {
     console.error('Başvuru gönderilemedi:', err)
@@ -289,7 +321,7 @@ const submitForm = async () => {
     
     showError(errorMessage)
   } finally {
-    isLoading.value = false
+    isSubmitting.value = false
   }
 }
 //#endregion
@@ -333,91 +365,8 @@ const submitForm = async () => {
   min-height: 350px;
   position: relative;
   padding: 10px 0;
-}
-
-.button-group {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 40px;
-  padding-top: 24px;
-  border-top: 1px solid #e2e8f0;
-  gap: 16px;
-  /* Sticky footer optional */
-  /* position: sticky; 
-     bottom: 0;
-     background: white;
-     z-index: 10; */
-}
-
-.spacer {
-  flex: 1;
-}
-
-.btn-back {
-  padding: 14px 20px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
-  background: transparent;
-  color: #22c55e;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  border-radius: 0;
-}
-
-.btn-back:hover {
-  color: #16a34a;
-  background: transparent;
-}
-
-.btn-next {
-  padding: 14px 32px;
-  font-size: 14px;
-  font-weight: 600;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  border: none;
-  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
-  color: #166534;
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.25);
-  min-width: 140px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  letter-spacing: 0.3px;
-}
-
-.btn-next:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.35);
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-  color: white;
-}
-
-.btn-next:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(34, 197, 94, 0.2);
-}
-
-.btn-next:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-.btn-spinner {
-  width: 20px;
-  height: 20px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 /* Toast Notifications */
