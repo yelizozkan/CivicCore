@@ -22,5 +22,12 @@ namespace AssociationMembership.Infrastructure.Repositories
                 .Where(g => g.TenantId == tenantId && !g.IsDeleted)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<TenantGroup>> GetByTenantIdAsync(int tenantId)
+        {
+            return await _context.TenantGroups
+                .Where(tg => tg.TenantId == tenantId && !tg.IsDeleted)
+                .ToListAsync();
+        }
     }
 }

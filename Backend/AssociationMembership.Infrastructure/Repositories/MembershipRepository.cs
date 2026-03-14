@@ -48,5 +48,15 @@ namespace AssociationMembership.Infrastructure.Repositories
             return await _context.Set<Membership>()
                 .AnyAsync(m => m.IdentityNumber == identityNumber && m.TenantGroupId == tenantGroupId);
         }
+
+        public async Task<IEnumerable<Membership>> GetMembershipsByTenantGroupIdsAsync(List<int> tenantGroupIds)
+        {
+            return await _context.Memberships
+                .Include(m => m.Tracking)
+                .Include(m => m.TenantGroup)
+                .Where(m => tenantGroupIds.Contains(m.TenantGroupId) && !m.IsDeleted)
+                .OrderByDescending(m => m.CreatedDate)
+                .ToListAsync();
+        }
     }
 }

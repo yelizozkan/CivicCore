@@ -5,6 +5,7 @@ const MEMBERSHIP_ENDPOINTS = {
     BASE: '/api/memberships',
     BY_ID: (id: number) => `/api/memberships/${id}`,
     BY_GROUP: (groupId: number) => `/api/memberships/group/${groupId}`,
+    BY_TENANT: (tenantId: number) => `/api/memberships/tenant/${tenantId}`,
     BY_STATUS: (status: string) => `/api/memberships/by-status/${status}`,
     UPDATE_STATUS: (id: number) => `/api/memberships/${id}/status`,
     WAITING_PAYMENT: '/api/memberships/waiting-payment',
@@ -130,13 +131,15 @@ export const useMemberships = () => {
     /**
      * Get membership by ID
      */
-    const getMembershipById = async (id: number): Promise<Membership> => {
+    const getMembershipById = async (id: number): Promise<Membership | null> => {
         try {
-            const response = await api.get<Membership>(MEMBERSHIP_ENDPOINTS.BY_ID(id))
-            return response.data as Membership
+            console.log('Calling API: GET /api/memberships/' + id)
+            const response = await api.get<any>(`/api/memberships/${id}`)
+            console.log('API Response data:', response.data)
+            return response.data !== undefined ? response.data : response
         } catch (error) {
-            console.error('Get membership error:', error)
-            throw error
+            console.error('Get membership by ID error:', error)
+            return null
         }
     }
 
@@ -153,6 +156,23 @@ export const useMemberships = () => {
             return response.data as Membership[]
         } catch (error) {
             console.error('Get memberships by group error:', error)
+            throw error
+        }
+    }
+
+    /**
+     * Get memberships by tenant
+     */
+    const getMembershipsByTenant = async (tenantId: number, status?: MembershipStatus): Promise<Membership[]> => {
+        try {
+            let url = MEMBERSHIP_ENDPOINTS.BY_TENANT(tenantId)
+            if (status !== undefined) {
+                url += `?status=${status}`
+            }
+            const response = await api.get<any>(url)
+            return (Array.isArray(response) ? response : response?.data || response) as Membership[]
+        } catch (error) {
+            console.error('Get memberships by tenant error:', error)
             throw error
         }
     }
@@ -233,6 +253,7 @@ export const useMemberships = () => {
         // Auth Required
         getMembershipById,
         getMembershipsByGroup,
+        getMembershipsByTenant,
         getMembershipsByStatus,
         updateMembershipStatus,
         deleteMembership,

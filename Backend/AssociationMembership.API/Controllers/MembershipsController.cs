@@ -6,6 +6,7 @@ using AssociationMembership.Application.Features.Memberships.Dtos;
 using AssociationMembership.Application.Features.Memberships.Queries.GetMembershipById;
 using AssociationMembership.Application.Features.Memberships.Queries.GetMembershipsByGroup;
 using AssociationMembership.Application.Features.Memberships.Queries.GetMembershipsByStatus;
+using AssociationMembership.Application.Features.Memberships.Queries.GetMembershipsByTenant;
 using AssociationMembership.Application.Features.Memberships.Queries.GetMembershipsOverduePayment;
 using AssociationMembership.Application.Features.Memberships.Queries.GetMembershipsWaitingPayment;
 using AssociationMembership.Domain.Common.Enums;
@@ -122,10 +123,16 @@ namespace AssociationMembership.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateMembershipStatus(
             int id,
-            [FromBody] UpdateMembershipStatusCommand command)
+            [FromBody] UpdateMembershipStatusDto dto)
         {
-            if (id != command.MembershipId)
-                return BadRequest(new { error = "ID mismatch" });
+            var command = new UpdateMembershipStatusCommand
+            {
+                MembershipId = id,  
+                Status = dto.Status,
+                PaymentAmount = dto.PaymentAmount,
+                PaymentReceivedDate = dto.PaymentReceivedDate,
+                Description = dto.Description
+            };
 
             var result = await _mediator.Send(command);
 
@@ -195,6 +202,30 @@ namespace AssociationMembership.API.Controllers
         public async Task<IActionResult> GetMembershipsByStatus(MembershipStatus status)
         {
             var query = new GetMembershipsByStatusQuery { Status = status };
+            var result = await _mediator.Send(query);
+
+            if (!result.IsSuccess)
+                return BadRequest(new { error = result.Error });
+
+            return Ok(result.Value);
+        }
+
+
+        /// <summary>
+        /// Get memberships by tenant (all groups under tenant)
+        /// </summary>
+        [HttpGet("tenant/{tenantId}")]
+        [ProducesResponseType(typeof(List<MembershipListDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetMembershipsByTenant(
+            int tenantId,
+            [FromQuery] MembershipStatus? status = null)
+        {
+            var query = new GetMembershipsByTenantQuery
+            {
+                TenantId = tenantId,
+                Status = status
+            };
+
             var result = await _mediator.Send(query);
 
             if (!result.IsSuccess)

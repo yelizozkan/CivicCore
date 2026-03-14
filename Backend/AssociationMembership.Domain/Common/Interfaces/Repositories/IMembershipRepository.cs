@@ -17,5 +17,6 @@ namespace AssociationMembership.Domain.Common.Interfaces.Repositories
         Task<IEnumerable<Membership>> GetMembershipsByGroupAsync(int tenantGroupId);
 
         Task<bool> IdentityNumberExistsAsync(string identityNumber, int tenantGroupId);
+        Task<IEnumerable<Membership>> GetMembershipsByTenantGroupIdsAsync(List<int> tenantGroupIds);
     }
 }

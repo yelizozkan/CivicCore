@@ -18,27 +18,10 @@
               <h1 class="text-[32px] font-bold text-gray-900 leading-tight">
                 {{ authStore.user.tenantGroup.name || 'Dashboard' }}
               </h1>
-              
-              <div class="flex items-center gap-6 mt-4 border-b border-gray-200 pb-0">
-                <div class="pb-3 border-b-2 border-green-600 text-green-700 font-semibold text-sm cursor-pointer">
-                  Genel Bakış
-                </div>
-                <div class="pb-3 text-gray-500 hover:text-gray-700 font-medium text-sm cursor-pointer transition-colors">
-                  Üyeler
-                </div>
-                 <div class="pb-3 text-gray-500 hover:text-gray-700 font-medium text-sm cursor-pointer transition-colors">
-                  Finansal
-                </div>
-                 <div class="pb-3 text-gray-500 hover:text-gray-700 font-medium text-sm cursor-pointer transition-colors">
-                  Sistem Ayarları
-                </div>
-              </div>
             </div>
           </div>
           
           <div class="flex items-center gap-4 self-start mt-2">
-             <LanguageSelector />
-             
              <button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors text-sm font-semibold text-gray-700">
                <v-icon size="18" class="text-gray-500">mdi-export-variant</v-icon>
                İçe Aktar
@@ -109,110 +92,134 @@
         <!-- Action Required Section -->
         <div class="mb-4" v-if="stats.pendingCount > 0 || stats.waitingPaymentCount > 0 || stats.overdueCount > 0">
           <h2 class="text-[16px] font-bold text-gray-900 mb-3 px-1">Gereken İşlemler</h2>
-          <v-row>
-            <v-col cols="12" md="4" v-if="stats.pendingCount > 0" class="px-2">
-              <v-alert
-                color="warning"
-                variant="tonal"
-                class="rounded-lg shadow-sm"
-                icon="mdi-account-clock"
-                border="start"
-                closable
-                style="font-size: 14px;"
-              >
-                <template v-slot:title>
-                  <span class="text-[15px] font-bold">{{ stats.pendingCount }} Yeni Başvuru</span>
-                </template>
-                İncelemenizi bekleyen yeni üyelik başvuruları var.
-                <div class="mt-3">
-                  <v-btn size="small" variant="flat" color="warning" class="text-white text-xs font-semibold rounded-md text-none px-4">Şimdi İncele</v-btn>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            
+            <div v-if="stats.pendingCount > 0" class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/60 rounded-xl shadow-sm transition-all hover:shadow-md">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-amber-100 rounded-lg flex items-center justify-center shrink-0">
+                  <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                  </svg>
                 </div>
-              </v-alert>
-            </v-col>
+                <div>
+                  <span class="text-sm font-medium text-amber-900">{{ stats.pendingCount }} yeni başvuru</span>
+                  <span class="text-sm text-amber-700"> incelemenizi bekliyor</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button @click="navigateTo('/memberships?tab=pending')" class="px-4 py-1.5 text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors">
+                  İncele
+                </button>
+                <button class="p-1 text-amber-400 hover:text-amber-600 hover:bg-amber-100 rounded transition-colors hidden sm:block">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
 
-            <v-col cols="12" md="4" v-if="stats.waitingPaymentCount > 0" class="px-2">
-              <v-alert
-                color="info"
-                variant="tonal"
-                class="rounded-lg shadow-sm"
-                icon="mdi-cash-clock"
-                border="start"
-                closable
-                style="font-size: 14px;"
-              >
-                <template v-slot:title>
-                   <span class="text-[15px] font-bold">{{ stats.waitingPaymentCount }} Ödeme Bekliyor</span>
-                </template>
-                Ön onaylı ancak henüz aidat ödememiş üyeler.
-                <div class="mt-3">
-                  <v-btn size="small" variant="flat" color="info" class="text-white text-xs font-semibold rounded-md text-none px-4">Listeyi Gör</v-btn>
+            <div v-if="stats.waitingPaymentCount > 0" class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/60 rounded-xl shadow-sm transition-all hover:shadow-md">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
+                  <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                  </svg>
                 </div>
-              </v-alert>
-            </v-col>
+                <div>
+                  <span class="text-sm font-medium text-blue-900">{{ stats.waitingPaymentCount }} üye</span>
+                  <span class="text-sm text-blue-700"> ödeme bekliyor</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button @click="navigateTo('/memberships?tab=preapproved')" class="px-4 py-1.5 text-sm font-medium bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors">
+                  Listeyi Gör
+                </button>
+                <button class="p-1 text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded transition-colors hidden sm:block">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
 
-            <v-col cols="12" md="4" v-if="stats.overdueCount > 0" class="px-2">
-              <v-alert
-                color="error"
-                variant="tonal"
-                class="rounded-lg shadow-sm"
-                icon="mdi-alert-circle"
-                border="start"
-                closable
-                style="font-size: 14px;"
-              >
-                <template v-slot:title>
-                  <span class="text-[15px] font-bold">{{ stats.overdueCount }} Gecikmiş Ödeme</span>
-                </template>
-                30 günden fazla gecikmiş ödemesi olan üyeler.
-                <div class="mt-3">
-                  <v-btn size="small" variant="flat" color="error" class="text-white text-xs font-semibold rounded-md text-none px-4">İşlem Yap</v-btn>
+            <div v-if="stats.overdueCount > 0" class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-red-50 to-rose-50 border border-red-200/60 rounded-xl shadow-sm transition-all hover:shadow-md">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-red-100 rounded-lg flex items-center justify-center shrink-0">
+                  <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                  </svg>
                 </div>
-              </v-alert>
-            </v-col>
-          </v-row>
+                <div>
+                  <span class="text-sm font-medium text-red-900">{{ stats.overdueCount }} üye</span>
+                  <span class="text-sm text-red-700"> gecikmiş ödemesi var</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button @click="navigateTo('/memberships?tab=inactive')" class="px-4 py-1.5 text-sm font-medium bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
+                  İşlem Yap
+                </button>
+                <button class="p-1 text-red-400 hover:text-red-600 hover:bg-red-100 rounded transition-colors hidden sm:block">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+          </div>
         </div>
 
         <!-- Recent Applications & Quick Actions -->
         <v-row class="mx-0">
           <v-col cols="12" lg="8" class="px-2">
             <v-card class="rounded-xl border border-gray-200 bg-white" elevation="0" style="box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;">
-              <v-card-title class="flex justify-between items-center py-4 px-6 border-b border-gray-100">
-                <span class="text-[18px] font-semibold text-slate-800">Son Başvurular</span>
-                <button class="text-[13px] font-medium text-blue-500 hover:text-blue-600 uppercase tracking-wider transition-colors">TÜMÜNÜ GÖR →</button>
+              <v-card-title class="py-4 px-6 border-b border-gray-100">
+                <div class="flex items-center justify-between mb-0">
+                  <h3 class="text-lg font-semibold text-slate-800">Son Başvurular</h3>
+                  <button 
+                    @click="showRecentApplicationsModal = true"
+                    class="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors"
+                  >
+                    Tümünü Gör
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                  </button>
+                </div>
               </v-card-title>
               
-              <v-data-table
-                :headers="headers"
-                :items="recentApplications"
-                :loading="loading"
-                hover
-                class="custom-primestay-table"
-                :items-per-page="5"
-                items-per-page-text="Sayfa başına kayıt:"
-                page-text="{0}-{1} / {2}"
-              >
-                <template v-slot:item.status="{ item }">
-                  <div class="inline-flex items-center px-2.5 py-1 rounded-full text-[13px] font-medium" :class="getBadgeClass(item.status)">
-                    <span class="mr-1.5 text-[10px]">●</span>
-                    {{ getStatusText(item.status) }}
-                  </div>
-                </template>
-
-                <template v-slot:item.createdAt="{ item }">
-                  <span class="text-[14px] text-[#374151]">{{ new Date(item.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' }) }}</span>
-                </template>
-
-                 <template v-slot:item.firstName="{ item }">
-                  <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold bg-[#eff6ff] text-[#2563eb]">
-                      {{ item.firstName?.charAt(0) || 'U' }}{{ item.lastName?.charAt(0) || '' }}
+              <div class="overflow-y-auto max-h-[380px] custom-scrollbar">
+                <v-data-table
+                  :headers="headers"
+                  :items="recentApplications"
+                  :loading="loading"
+                  hover
+                  class="custom-primestay-table"
+                  hide-default-footer
+                  disable-pagination
+                >
+                  <template v-slot:item.status="{ item }">
+                    <div class="inline-flex items-center px-2.5 py-1 rounded-full text-[13px] font-medium" :class="getBadgeClass(item.status)">
+                      <span class="mr-1.5 text-[10px]">●</span>
+                      {{ getStatusText(item.status) }}
                     </div>
-                    <div class="flex flex-col">
-                      <span class="text-[14px] font-semibold text-[#1e293b]">{{ item.firstName }} {{ item.lastName }}</span>
-                      <span class="text-[13px] text-[#64748b]">{{ item.email || '-' }}</span>
+                  </template>
+  
+                  <template v-slot:item.createdAt="{ item }">
+                    <span class="text-[14px] text-[#374151]">{{ new Date(item.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' }) }}</span>
+                  </template>
+  
+                   <template v-slot:item.firstName="{ item }">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold text-[#2563eb] bg-[#eff6ff] shrink-0">
+                        {{ getInitials(item.fullName || `${item.firstName} ${item.lastName}`) }}
+                      </div>
+                      <div class="flex flex-col truncate min-w-0">
+                        <span class="text-[14px] font-semibold text-[#1e293b] truncate">{{ item.fullName || `${item.firstName} ${item.lastName}` }}</span>
+                        <span class="text-[13px] text-[#64748b] truncate">{{ item.email || '-' }}</span>
+                      </div>
                     </div>
-                  </div>
-                </template>
+                  </template>
 
                 <template v-slot:item.phone="{ item }">
                   <span class="text-[14px] text-[#374151]">{{ item.mobilePhone || item.phone || '-' }}</span>
@@ -223,7 +230,7 @@
                     <button class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-white hover:shadow-sm hover:border-gray-300 transition-all flex items-center justify-center">
                       <v-icon size="18">mdi-download-outline</v-icon>
                     </button>
-                    <button class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-white hover:shadow-sm hover:border-gray-300 transition-all flex items-center justify-center">
+                    <button @click="navigateTo(`/memberships/${item.id}`)" class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-white hover:shadow-sm hover:border-gray-300 transition-all flex items-center justify-center">
                       <v-icon size="18">mdi-eye-outline</v-icon>
                     </button>
                   </div>
@@ -239,6 +246,7 @@
                   </div>
                 </template>
               </v-data-table>
+              </div>
             </v-card>
           </v-col>
 
@@ -303,6 +311,89 @@
           v-model="showGroupDetails"
           :tenant-group="authStore.user?.tenantGroup"
         />
+
+        <!-- SEE ALL MODAL/POPUP -->
+        <div v-if="showRecentApplicationsModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[100]">
+          <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[85vh] flex flex-col mx-4 overflow-hidden">
+            <!-- Header -->
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+              <h2 class="text-xl font-semibold text-slate-800">Son Başvurular</h2>
+              <button @click="showRecentApplicationsModal = false" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </button>
+            </div>
+            
+            <!-- Content - Scrollable -->
+            <div class="overflow-y-auto flex-1 custom-scrollbar">
+               <v-data-table
+                  :headers="headers"
+                  :items="allPendingApplications"
+                  :loading="loading"
+                  hover
+                  class="custom-primestay-table"
+                  hide-default-footer
+                  disable-pagination
+                >
+                  <template v-slot:item.status="{ item }">
+                    <div class="inline-flex items-center px-2.5 py-1 rounded-full text-[13px] font-medium" :class="getBadgeClass(item.status)">
+                      <span class="mr-1.5 text-[10px]">●</span>
+                      {{ getStatusText(item.status) }}
+                    </div>
+                  </template>
+  
+                  <template v-slot:item.createdAt="{ item }">
+                    <span class="text-[14px] text-[#374151]">{{ new Date(item.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' }) }}</span>
+                  </template>
+  
+                   <template v-slot:item.firstName="{ item }">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold text-[#2563eb] bg-[#eff6ff] shrink-0">
+                        {{ getInitials(item.fullName || `${item.firstName} ${item.lastName}`) }}
+                      </div>
+                      <div class="flex flex-col truncate min-w-0">
+                        <span class="text-[14px] font-semibold text-[#1e293b] truncate">{{ item.fullName || `${item.firstName} ${item.lastName}` }}</span>
+                        <span class="text-[13px] text-[#64748b] truncate">{{ item.email || '-' }}</span>
+                      </div>
+                    </div>
+                  </template>
+                  <template v-slot:item.phone="{ item }">
+                    <span class="text-[14px] text-[#374151]">{{ item.mobilePhone || item.phone || '-' }}</span>
+                  </template>
+                   <template v-slot:item.actions="{ item }">
+                    <div class="flex items-center justify-end gap-2">
+                      <button class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-white hover:shadow-sm hover:border-gray-300 transition-all flex items-center justify-center">
+                        <v-icon size="18">mdi-download-outline</v-icon>
+                      </button>
+                      <button @click="navigateTo(`/memberships/${item.id}`)" class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-white hover:shadow-sm hover:border-gray-300 transition-all flex items-center justify-center">
+                        <v-icon size="18">mdi-eye-outline</v-icon>
+                      </button>
+                    </div>
+                  </template>
+                  <template v-slot:no-data>
+                    <div class="py-12 flex flex-col items-center justify-center text-center">
+                      <div class="w-16 h-16 bg-gray-50 flex items-center justify-center mb-4 border border-gray-100" style="border-radius: 12px;">
+                        <v-icon size="36" color="#cbd5e1">mdi-inbox-outline</v-icon>
+                      </div>
+                      <span class="text-[15px] font-semibold text-slate-800 mb-1">Bekleyen başvuru bulunamadı</span>
+                    </div>
+                  </template>
+                </v-data-table>
+            </div>
+            
+            <!-- Footer -->
+            <div class="flex justify-end px-6 py-4 border-t border-slate-100 bg-slate-50 shrink-0">
+              <button 
+                @click="navigateTo('/memberships?tab=pending')"
+                class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white text-sm font-medium rounded-lg transition-colors"
+              >
+                Tüm Başvuruları Görüntüle
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -315,7 +406,7 @@ import TenantGroupDetailDialog from '~/components/TenantGroupDetailDialog.vue'
 import { MembershipStatus, type Membership } from '~/types'
 
 const authStore = useAuthStore()
-const { getMembershipsByGroup, getMembershipsWaitingPayment, getMembershipsOverduePayment } = useMemberships()
+const { getMembershipsByTenant, getMembershipsOverduePayment } = useMemberships()
 
 const showGroupDetails = ref(false)
 const loading = ref(true)
@@ -324,6 +415,8 @@ const snackbarMessage = ref('')
 
 // Data
 const recentApplications = ref<Membership[]>([])
+const allPendingApplications = ref<Membership[]>([])
+const showRecentApplicationsModal = ref(false)
 const stats = reactive({
   totalMembers: 0,
   pendingCount: 0,
@@ -340,6 +433,15 @@ const headers: any[] = [
 ]
 
 // Custom Badge Styling Logic for Target Component Design
+const getInitials = (fullName: string) => {
+  if (!fullName) return 'U'
+  const names = fullName.trim().split(' ')
+  if (names.length >= 2) {
+    return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase()
+  }
+  return names[0].charAt(0).toUpperCase()
+}
+
 const getBadgeClass = (status: MembershipStatus) => {
   switch (status) {
     case MembershipStatus.Approved: 
@@ -359,12 +461,12 @@ const getBadgeClass = (status: MembershipStatus) => {
 
 const getStatusText = (status: MembershipStatus) => {
    switch (status) {
-    case MembershipStatus.Pending: return 'Beklemede'
-    case MembershipStatus.PreApproved: return 'Ön Onaylı'
-    case MembershipStatus.Approved: return 'Onaylı'
+    case MembershipStatus.Pending: return 'Bekleyen Başvuru'
+    case MembershipStatus.PreApproved: return 'Ödeme Bekliyor'
+    case MembershipStatus.Approved: return 'Aktif Üye'
     case MembershipStatus.Rejected: return 'Reddedildi'
-    case MembershipStatus.Suspended: return 'Askıda'
-    case MembershipStatus.Cancelled: return 'İptal'
+    case MembershipStatus.Suspended: return 'Askıya Alındı'
+    case MembershipStatus.Cancelled: return 'İptal Edildi'
     default: return 'Bilinmiyor'
   }
 }
@@ -393,65 +495,61 @@ const copyRegistrationLink = async () => {
 
 // Fetch Data
 const fetchDashboardData = async () => {
-  if (!authStore.user?.tenantGroupId) return
+  let tenantId = authStore.user?.tenantGroup?.tenantId
+  
+  if (!tenantId && process.client) {
+    const savedUser = localStorage.getItem('user')
+    if (savedUser) {
+      try {
+        const parsedUser = JSON.parse(savedUser)
+        authStore.user = parsedUser
+        tenantId = parsedUser?.tenantGroup?.tenantId
+      } catch (e) {
+        console.error('Error loading user from localStorage', e)
+      }
+    }
+  }
+
+  if (!tenantId) {
+    loading.value = false
+    return
+  }
 
   loading.value = true
   try {
-    const groupId = authStore.user.tenantGroupId
-
-    // Parallel API calls with safe handling
-    const [allMembersRes, pendingMembersRes, waitingPaymentRes, overduePaymentsRes] = await Promise.all([
-      getMembershipsByGroup(groupId).catch(e => { console.error('Error fetching members:', e); return [] }), 
-      getMembershipsByGroup(groupId, MembershipStatus.Pending).catch(e => { console.error('Error fetching pending:', e); return [] }),
-      getMembershipsWaitingPayment().catch(e => { console.error('Error fetching waiting payment:', e); return [] }),
+    // Parallel API calls with safe fallback array return handling
+    const [activeRes, pendingRes, waitingPaymentRes, overdueRes] = await Promise.all([
+      getMembershipsByTenant(tenantId, MembershipStatus.Approved).catch(e => { console.error('Error fetching active:', e); return [] }),
+      getMembershipsByTenant(tenantId, MembershipStatus.Pending).catch(e => { console.error('Error fetching pending:', e); return [] }),
+      getMembershipsByTenant(tenantId, MembershipStatus.PreApproved).catch(e => { console.error('Error fetching waiting payment:', e); return [] }),
       getMembershipsOverduePayment().catch(e => { console.error('Error fetching overdue:', e); return [] })
     ])
 
-    // Safe Data Handling
-    // If API returns wrap in object with data or array directly
-    // Using simple Array.isArray check as existing code suggests
-    const allMembers = Array.isArray(allMembersRes) ? allMembersRes : (allMembersRes as any)?.data || []
-    const pendingMembers = Array.isArray(pendingMembersRes) ? pendingMembersRes : (pendingMembersRes as any)?.data || []
-    const waitingPayment = Array.isArray(waitingPaymentRes) ? waitingPaymentRes : (waitingPaymentRes as any)?.data || []
-    const overduePayments = Array.isArray(overduePaymentsRes) ? overduePaymentsRes : (overduePaymentsRes as any)?.data || []
+    // Extract arrays properly ensuring api compatibility
+    const activeMembers = Array.isArray(activeRes) ? activeRes : (activeRes as any)?.data || activeRes || []
+    const pendingMembers = Array.isArray(pendingRes) ? pendingRes : (pendingRes as any)?.data || pendingRes || []
+    const waitingPayment = Array.isArray(waitingPaymentRes) ? waitingPaymentRes : (waitingPaymentRes as any)?.data || waitingPaymentRes || []
+    const overduePayments = Array.isArray(overdueRes) ? overdueRes : (overdueRes as any)?.data || overdueRes || []
 
-    // Update Stats
-    stats.totalMembers = allMembers.filter((m: Membership) => m.status === MembershipStatus.Approved).length
+    // Update Stats counters based on actual returned elements count
+    stats.totalMembers = activeMembers.length
     stats.pendingCount = pendingMembers.length
     stats.waitingPaymentCount = waitingPayment.length
     stats.overdueCount = overduePayments.length
 
-    // Update Recent Applications (Pending ones, limit 5)
-    // Temporary mock data for testing table styles
-    recentApplications.value = [
-      {
-        id: 1,
-        firstName: 'Ali',
-        lastName: 'Yılmaz',
-        email: 'ali.yilmaz@example.com',
-        mobilePhone: '+90 532 123 45 67',
-        status: MembershipStatus.Pending,
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: 2,
-        firstName: 'Ayşe',
-        lastName: 'Demir',
-        email: 'ayse.demir@example.com',
-        mobilePhone: '+90 533 987 65 43',
-        status: MembershipStatus.Approved,
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: 3,
-        firstName: 'Mehmet',
-        lastName: 'Kaya',
-        email: 'mehmet.kaya@example.com',
-        mobilePhone: '+90 534 555 44 33',
-        status: MembershipStatus.Rejected,
-        createdAt: new Date().toISOString()
-      }
-    ] as any[]
+    // Update Recent Applications (Sorting descending and cropping to top 5)
+    const sortedPending = [...pendingMembers].sort((a: any, b: any) => {
+      const dateA = new Date(a.createdDate || a.createdAt || 0).getTime()
+      const dateB = new Date(b.createdDate || b.createdAt || 0).getTime()
+      return dateB - dateA
+    })
+    
+    // We seamlessly inject createdAt mapping if API primarily provides createdDate
+    allPendingApplications.value = sortedPending.map((m: any) => ({
+      ...m,
+      createdAt: m.createdDate || m.createdAt || new Date().toISOString()
+    }))
+    recentApplications.value = allPendingApplications.value.slice(0, 5)
 
   } catch (error) {
     console.error('Error fetching dashboard data:', error)
@@ -460,8 +558,11 @@ const fetchDashboardData = async () => {
   }
 }
 
-onMounted(() => {
-  fetchDashboardData()
+onMounted(async () => {
+  if (!authStore.user) {
+    await authStore.initializeAuth()
+  }
+  await fetchDashboardData()
 })
 
 // Page metadata
@@ -496,5 +597,20 @@ definePageMeta({
 }
 :deep(.custom-primestay-table .v-table__wrapper > table > tbody > tr:hover > td) {
   background-color: #f8fafc !important;
+}
+
+/* Subtle Custom Scrollbar for the table wrapper */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
 }
 </style>

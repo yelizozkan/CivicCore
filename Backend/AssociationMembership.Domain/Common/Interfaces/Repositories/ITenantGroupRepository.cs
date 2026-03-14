@@ -11,5 +11,6 @@ namespace AssociationMembership.Domain.Common.Interfaces.Repositories
     public interface ITenantGroupRepository : IRepository<TenantGroup, int>
     {
         Task<IEnumerable<TenantGroup>> GetGroupsByTenantAsync(int tenantId);
+        Task<IEnumerable<TenantGroup>> GetByTenantIdAsync(int tenantId);
     }
 }

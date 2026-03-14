@@ -15,7 +15,7 @@
         <button 
           v-for="tab in tabs" 
           :key="tab.value"
-          @click="activeTab = tab.value"
+          @click="handleTabChange(tab.value)"
           class="whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors"
           :class="[
             activeTab === tab.value
@@ -85,6 +85,18 @@
       </div>
     </div>
 
+    <!-- Error State -->
+    <div v-else-if="apiError" class="bg-red-50 border border-red-200 rounded-xl p-12 text-center">
+      <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <Icon name="mdi:alert-circle-outline" class="w-8 h-8 text-red-500" />
+      </div>
+      <h3 class="text-lg font-medium text-red-900 mb-1">Bağlantı Hatası</h3>
+      <p class="text-red-700 text-sm">{{ apiError }}</p>
+      <button @click="fetchMembers" class="mt-4 px-4 py-2 bg-white border border-red-300 rounded-lg text-sm font-medium text-red-700 hover:bg-red-50 transition-colors">
+        Tekrar Dene
+      </button>
+    </div>
+
     <!-- Empty State -->
     <div v-else-if="filteredMembers.length === 0" class="bg-white border border-gray-200 rounded-xl p-12 text-center">
       <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -105,7 +117,7 @@
         <div class="flex justify-between items-start mb-2">
           <div class="w-[48px] h-[48px] rounded-full flex items-center justify-center text-[16px] font-medium"
                :class="getAvatarColor(member)">
-            {{ getInitials(member.firstName, member.lastName) }}
+            {{ getInitials(member.fullName) }}
           </div>
           
           <v-menu location="bottom end">
@@ -124,13 +136,13 @@
 
         <!-- Member Info -->
         <div class="mb-3 flex-1">
-          <h3 class="text-[15px] font-semibold text-[#1e293b] truncate" :title="`${member.firstName} ${member.lastName}`">
-            {{ member.firstName }} {{ member.lastName }}
+          <h3 class="text-[15px] font-semibold text-[#1e293b] truncate" :title="member.fullName">
+            {{ member.fullName }}
           </h3>
           
-          <div class="flex items-center gap-1.5 text-[13px] text-[#64748b] mt-1.5" v-if="member.phone">
+          <div class="flex items-center gap-1.5 text-[13px] text-[#64748b] mt-1.5" v-if="member.mobilePhone">
             <Icon name="mdi:phone-outline" class="w-4 h-4 shrink-0 text-gray-400" />
-            <span class="truncate">{{ member.phone }}</span>
+            <span class="truncate">{{ member.mobilePhone }}</span>
           </div>
           
           <div class="flex items-center gap-1.5 text-[13px] text-[#64748b] mt-1" v-if="member.email">
@@ -149,7 +161,7 @@
           </div>
           <div class="flex items-center gap-2" v-if="member.birthDate">
             <Icon name="mdi:cake-variant-outline" class="w-4 h-4 text-gray-400" />
-            <span class="text-gray-600">{{ member.birthDate }}</span>
+            <span class="text-gray-600">{{ formatDate(member.birthDate) }}</span>
           </div>
         </div>
 
@@ -215,11 +227,16 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { MembershipStatus } from '~/types'
+import { useAuthStore } from '~/stores/auth'
+import { useMemberships } from '~/composables/useMemberships'
 
 const router = useRouter()
+const authStore = useAuthStore()
+const { getMembershipsByTenant } = useMemberships()
 
 // View state
 const isLoading = ref(true)
+const apiError = ref('')
 const activeTab = ref('all')
 const searchQuery = ref('')
 const currentPage = ref(1)
@@ -228,85 +245,127 @@ const itemsPerPage = 12
 // Tabs definition
 const tabs = [
   { label: 'Tüm Üyeler', value: 'all' },
-  { label: 'Onay Bekleyenler', value: 'pending' },
-  { label: 'Aktif Üyeler', value: 'active' },
-  { label: 'Pasif Üyeler', value: 'inactive' }
+  { label: 'Başvurular', value: 'pending' },
+  { label: 'Ödeme Bekleyenler', value: 'preapproved' },
+  { label: 'Aktif Üyeler', value: 'approved' },
+  { label: 'Pasif Üyeler', value: 'passive' }
 ]
 
 // Status mappings
-const statusStyles = {
-  [MembershipStatus.Pending]: { label: 'Beklemede', class: 'bg-[#fef3c7] text-[#92400e]' },
+const statusStyles: Record<number, { label: string, class: string }> = {
+  [MembershipStatus.Pending]: { label: 'Beklemede', class: 'bg-amber-100 text-amber-800' },
   [MembershipStatus.PreApproved]: { label: 'Ön Onaylı', class: 'bg-blue-100 text-blue-800' },
-  [MembershipStatus.Approved]: { label: 'Aktif', class: 'bg-[#dcfce7] text-[#166534]' },
-  [MembershipStatus.Rejected]: { label: 'Reddedildi', class: 'bg-[#fee2e2] text-[#991b1b]' },
-  [MembershipStatus.Suspended]: { label: 'Askıya Alındı', class: 'bg-gray-100 text-gray-800' },
+  [MembershipStatus.Approved]: { label: 'Aktif Üye', class: 'bg-green-100 text-green-800' },
+  [MembershipStatus.Rejected]: { label: 'Reddedildi', class: 'bg-red-100 text-red-800' },
+  [MembershipStatus.Suspended]: { label: 'Askıya Alındı', class: 'bg-orange-100 text-orange-800' },
   [MembershipStatus.Cancelled]: { label: 'İptal Edildi', class: 'bg-gray-100 text-gray-800' }
 }
 
-// Mock Data
+// API Data
 const members = ref<any[]>([])
 
-const generateMockData = () => {
-  const firstNames = ['Ayşe', 'Fatma', 'Mehmet', 'Ali', 'Zeynep', 'Ahmet', 'Burcu', 'Can', 'Derya', 'Emre', 'Gizem', 'Hakan', 'Işıl', 'Kaan', 'Leyla'];
-  const lastNames = ['Yılmaz', 'Kaya', 'Demir', 'Çelik', 'Şahin', 'Yıldız', 'Öztürk', 'Aydın', 'Özdemir', 'Arslan', 'Doğan', 'Kılıç', 'Aslan', 'Çetin', 'Kara'];
-  
-  const mockMembers = [];
-  
-  for (let i = 1; i <= 24; i++) {
-    const fName = firstNames[Math.floor(Math.random() * firstNames.length)];
-    const lName = lastNames[Math.floor(Math.random() * lastNames.length)];
-    
-    // Status distribution
-    let status = MembershipStatus.Approved;
-    const rand = Math.random();
-    if (rand > 0.8) status = MembershipStatus.Pending;
-    else if (rand > 0.7) status = MembershipStatus.Rejected;
-    else if (rand > 0.65) status = MembershipStatus.Suspended;
-
-    const months = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
-
-    mockMembers.push({
-      id: i,
-      firstName: fName,
-      lastName: lName,
-      phone: `+90 532 ${Math.floor(100 + Math.random() * 900)} ${Math.floor(10 + Math.random() * 90)} ${Math.floor(10 + Math.random() * 90)}`,
-      email: `${fName.toLowerCase()}.${lName.toLowerCase()}@example.com`,
-      status: status,
-      birthDate: rand > 0.4 ? `${Math.floor(Math.random() * 28) + 1} ${months[Math.floor(Math.random() * 12)]} ${1970 + Math.floor(Math.random() * 30)}` : undefined,
-    });
-  }
-  
-  return mockMembers;
+const handleTabChange = async (tab: string) => {
+  activeTab.value = tab
+  await fetchMembers()
 }
 
-onMounted(() => {
-  isLoading.value = true
-  setTimeout(() => {
-    members.value = generateMockData()
+const fetchMembers = async () => {
+  const tenantId = authStore.user?.tenantGroup?.tenantId
+  if (!tenantId) {
+    apiError.value = 'Geçerli bir kurum bulunamadı.'
     isLoading.value = false
-  }, 1000) // Simulate network request delay
+    return
+  }
+  
+  isLoading.value = true
+  apiError.value = ''
+  
+  try {
+    let status: number | undefined
+    let filterPassiveOnFrontend = false
+    
+    switch (activeTab.value) {
+      case 'pending': status = MembershipStatus.Pending; break
+      case 'preapproved': status = MembershipStatus.PreApproved; break
+      case 'approved': status = MembershipStatus.Approved; break
+      case 'passive': 
+        status = undefined
+        filterPassiveOnFrontend = true
+        break
+      default: status = undefined
+    }
+    
+    const response = await getMembershipsByTenant(tenantId, status)
+    console.log('API Response:', response)
+    
+    let fetchedMembers = Array.isArray(response) ? response : (response as any)?.data || response || []
+    
+    if (filterPassiveOnFrontend) {
+      fetchedMembers = fetchedMembers.filter((m: any) => [
+        MembershipStatus.Rejected, 
+        MembershipStatus.Suspended, 
+        MembershipStatus.Cancelled
+      ].includes(m.status))
+    }
+    
+    members.value = fetchedMembers
+    console.log('Members state:', members.value)
+  } catch (err: any) {
+    console.error('API Error:', err)
+    apiError.value = 'Üye listesi yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.'
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(async () => {
+  isLoading.value = true
+  
+  // If `user` is missing from the store, load it from localStorage
+  if (!authStore.user && process.client) {
+    const savedUser = localStorage.getItem('user')
+    if (savedUser) {
+      try {
+        const parsedUser = JSON.parse(savedUser)
+        authStore.user = parsedUser
+        // also set properties normally handled by setUser if needed
+        if (parsedUser.permissions) {
+          authStore.permissions = parsedUser.permissions.map((p: any) => p.fullPermission)
+        }
+        if (parsedUser.roles) {
+          authStore.roles = parsedUser.roles.map((r: any) => r.name)
+        }
+      } catch (e) {
+        console.error('Error loading user from localStorage', e)
+      }
+    }
+  }
+
+  // Ensure the auth store is initialized (useful for hard refreshes if tokens need processing)
+  if (!authStore.user) {
+    await authStore.initializeAuth()
+  }
+
+  // Redirect to login if user is still null
+  if (!authStore.user) {
+    router.push('/login')
+    return
+  }
+
+  await fetchMembers()
 })
 
 // Filter actions
 const filteredMembers = computed(() => {
   let result = members.value
 
-  // Apply tab filter
-  if (activeTab.value === 'pending') {
-    result = result.filter(m => m.status === MembershipStatus.Pending || m.status === MembershipStatus.PreApproved)
-  } else if (activeTab.value === 'active') {
-    result = result.filter(m => m.status === MembershipStatus.Approved)
-  } else if (activeTab.value === 'inactive') {
-    result = result.filter(m => [MembershipStatus.Rejected, MembershipStatus.Suspended, MembershipStatus.Cancelled].includes(m.status))
-  }
-
   // Apply search
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(m => 
-      m.firstName.toLowerCase().includes(query) || 
-      m.lastName.toLowerCase().includes(query) ||
-      m.email.toLowerCase().includes(query)
+      (m.fullName && m.fullName.toLowerCase().includes(query)) || 
+      (m.email && m.email.toLowerCase().includes(query)) ||
+      (m.mobilePhone && m.mobilePhone.toLowerCase().includes(query))
     )
   }
 
@@ -344,8 +403,20 @@ const paginationEnd = computed(() => {
 })
 
 // Helper methods
-const getInitials = (firstName: string, lastName: string) => {
-  return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase()
+const getInitials = (fullName: string) => {
+  if (!fullName) return 'U'
+  const parts = fullName.trim().split(' ')
+  if (parts.length >= 2) {
+    return `${parts[0].charAt(0)}${parts[parts.length - 1].charAt(0)}`.toUpperCase()
+  }
+  return fullName.charAt(0).toUpperCase()
+}
+
+const formatDate = (isoString?: string) => {
+  if (!isoString) return ''
+  const date = new Date(isoString)
+  if (isNaN(date.getTime())) return ''
+  return date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 const getAvatarColor = (member: any) => {
@@ -357,7 +428,8 @@ const getAvatarColor = (member: any) => {
     'bg-[#fff7ed] text-[#ea580c]', // orange
     'bg-[#f8fafc] text-[#475569]'  // slate
   ]
-  const index = (member.firstName.length + member.lastName.length) % colors.length
+  const length = member.fullName ? member.fullName.length : 0
+  const index = length % colors.length
   return colors[index]
 }
 
