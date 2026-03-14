@@ -164,7 +164,9 @@ namespace AssociationMembership.Application.Mappings
                 .ForMember(dest => dest.Status,
                     opt => opt.MapFrom(src => src.Tracking != null ? src.Tracking.Status : MembershipStatus.Pending))
                 .ForMember(dest => dest.ApprovedDate,
-                    opt => opt.MapFrom(src => src.Tracking != null ? src.Tracking.ApprovedDate : null));
+                    opt => opt.MapFrom(src => src.Tracking != null ? src.Tracking.ApprovedDate : null))
+                .ForMember(dest => dest.BirthDate,
+                    opt => opt.MapFrom(src => src.BirthDate));
 
 
             // Tenant Mappings

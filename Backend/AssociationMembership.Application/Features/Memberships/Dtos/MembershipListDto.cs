@@ -15,6 +15,7 @@ namespace AssociationMembership.Application.Features.Memberships.Dtos
         public string Email { get; set; }
         public string MobilePhone { get; set; }
         public MembershipStatus Status { get; set; }
+        public DateTime BirthDate { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? ApprovedDate { get; set; }
     }
