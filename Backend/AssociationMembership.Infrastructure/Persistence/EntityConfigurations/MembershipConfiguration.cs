@@ -65,7 +65,7 @@ namespace AssociationMembership.Infrastructure.Persistence.EntityConfigurations
                    .HasMaxLength(50);
 
             builder.Property(x => x.BloodType)
-                   .HasMaxLength(5);
+                   .HasMaxLength(10);
             
             builder.Property(x => x.EducationLevel)
                    .HasMaxLength(100);

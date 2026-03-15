@@ -33,7 +33,7 @@
         <button 
           v-if="currentStep > 1"
           @click="prevStep"
-          class="flex items-center gap-2 px-6 py-3 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-all text-base font-medium"
+          class="flex items-center gap-2 px-6 py-2.5 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-all text-sm font-medium"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
@@ -47,7 +47,7 @@
           v-if="currentStep === totalSteps"
           @click="submitForm"
           :disabled="isSubmitting"
-          class="flex items-center gap-2 px-8 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 text-white rounded-xl transition-all text-base font-medium shadow-sm ml-auto"
+          class="flex items-center gap-2 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 text-white rounded-lg transition-all text-sm font-medium shadow-sm ml-auto"
         >
           <span v-if="isSubmitting">Gönderiliyor...</span>
           <span v-else>Başvuruyu Gönder</span>
@@ -60,7 +60,7 @@
         <button 
           v-else
           @click="handleNext"
-          class="flex items-center gap-2 px-8 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-xl transition-all text-base font-medium shadow-sm ml-auto"
+          class="flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-lg transition-all text-sm font-medium shadow-sm ml-auto"
         >
           Devam Et
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -161,7 +161,7 @@ const currentStepRef = ref<any>(null)
 const error = ref('')
 const successMessage = ref('')
 
-const formData = reactive<MembershipFormData>({
+const formData = ref<MembershipFormData>({
   firstName: '',
   lastName: '',
   identityNumber: '',
@@ -272,33 +272,54 @@ const submitForm = async () => {
   error.value = ''
   
   try {
-    const payload = {
-      tenantGroupId: props.tenantGroupId,
-      membership: {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        identityNumber: formData.identityNumber,
-        motherName: formData.motherName,
-        fatherName: formData.fatherName,
-        birthPlace: formData.birthPlace,
-        birthDate: formData.birthDate,
-        bloodType: formData.bloodType,
-        educationLevel: formData.educationLevel,
-        profession: formData.profession,
-        workplaceName: formData.workplaceName || null,
-        workplacePosition: formData.workplacePosition || null,
-        mobilePhone: formData.mobilePhone,
-        workPhone: formData.workPhone || null,
-        email: formData.email,
-        residenceAddress: formData.residenceAddress,
-        workplaceAddress: formData.workplaceAddress || null,
-        motivationText: formData.motivationText,
-        kvkkAccepted: formData.kvkkAccepted,
-        explicitConsentAccepted: formData.explicitConsentAccepted
-      }
+    // DEBUG: Check Tenant Group ID
+    console.log('=== TENANT GROUP DEBUG ===')
+    console.log('props.tenantGroupId:', props.tenantGroupId)
+    console.log('props.tenantGroupId type:', typeof props.tenantGroupId)
+    console.log('props.groupInfo:', props.groupInfo)
+    console.log('route.params:', router.currentRoute.value.params)
+    console.log('===========================')
+
+    // DEBUG: Check formData content
+    console.log('=== FORM DATA DEBUG ===')
+    console.log('formData:', formData)
+    console.log('formData.value:', formData.value)
+    console.log('firstName:', formData.value?.firstName)
+    console.log('email:', formData.value?.email)
+    console.log('========================')
+
+    // Convert tenantGroupId to integer
+    const tenantId = parseInt(props.tenantGroupId?.toString() || '0', 10)
+    console.log('tenantGroupId (parsed):', tenantId, typeof tenantId)
+
+    const membershipData = {
+      firstName: formData.value.firstName,
+      lastName: formData.value.lastName,
+      identityNumber: formData.value.identityNumber,
+      motherName: formData.value.motherName,
+      fatherName: formData.value.fatherName,
+      birthPlace: formData.value.birthPlace,
+      birthDate: formData.value.birthDate,
+      bloodType: formData.value.bloodType,
+      educationLevel: formData.value.educationLevel,
+      profession: formData.value.profession,
+      workplaceName: formData.value.workplaceName || '',
+      workplacePosition: formData.value.workplacePosition || '',
+      mobilePhone: formData.value.mobilePhone,
+      workPhone: formData.value.workPhone || '',
+      email: formData.value.email,
+      residenceAddress: formData.value.residenceAddress,
+      workplaceAddress: formData.value.workplaceAddress || '',
+      motivationText: formData.value.motivationText,
+      kvkkAccepted: formData.value.kvkkAccepted,
+      explicitConsentAccepted: formData.value.explicitConsentAccepted
     }
 
-    await createMembership(payload, props.tenantGroupId)
+    console.log('=== PAYLOAD DEBUG ===')
+    console.log('Membership Data to be wrapped:', JSON.stringify(membershipData, null, 2))
+    console.log('=====================')
+
+    await createMembership(membershipData as any, tenantId)
     
     // Yönlendirme
     router.push('/membership/success')
@@ -306,20 +327,13 @@ const submitForm = async () => {
   } catch (err: any) {
     console.error('Başvuru gönderilemedi:', err)
     
-    // Handle different error formats
-    let errorMessage = 'Başvuru gönderilemedi. Lütfen tekrar deneyin.'
-    
-    if (err.data?.error) {
-      errorMessage = err.data.error
-    } else if (err.data?.message) {
-      errorMessage = err.data.message
-    } else if (err.data?.errors && Array.isArray(err.data.errors)) {
-      errorMessage = err.data.errors.join(', ')
-    } else if (err.message) {
-      errorMessage = err.message
+    // Hata mesajını göster
+    if (err.data?.errors) {
+      const errorMessages = Object.values(err.data.errors).flat().join(', ')
+      showError(errorMessages)
+    } else {
+      showError('Başvuru gönderilemedi. Lütfen tüm alanları kontrol edin.')
     }
-    
-    showError(errorMessage)
   } finally {
     isSubmitting.value = false
   }
@@ -330,6 +344,8 @@ const submitForm = async () => {
 <style scoped>
 .wizard-container {
   width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
   position: relative;
 }
 
@@ -365,8 +381,7 @@ const submitForm = async () => {
   min-height: 350px;
   position: relative;
   padding: 10px 0;
-  max-width: 700px;
-  margin: 0 auto;
+  width: 100%;
 }
 
 /* Toast Notifications */

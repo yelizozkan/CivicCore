@@ -36,7 +36,7 @@
 
         <!-- Wizard Component -->
         <RegisterWizard 
-          :tenant-group-id="groupInfo.tenantGroupId || groupInfo.tenantId"
+          :tenant-group-id="effectiveTenantGroupId"
           :group-info="groupInfo"
         />
       </div>
@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
 //#region Imports
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import RegisterWizard from '~/components/Membership/RegisterWizard.vue'
 //#endregion
@@ -89,6 +89,13 @@ useHead({
 })
 //#endregion
 
+const effectiveTenantGroupId = computed(() => {
+  if (!groupInfo.value) return 0
+  const id = groupInfo.value.tenantGroupId ?? groupInfo.value.tenantId
+  console.log('[slug] effectiveTenantGroupId resolved to:', id, 'type:', typeof id)
+  return Number(id)
+})
+
 //#region Lifecycle
 onMounted(async () => {
   const slug = route.params.slug as string
@@ -103,7 +110,17 @@ onMounted(async () => {
     // API'den slug'ı resolve et
     const response = await resolveSlug(slug)
     groupInfo.value = response
-    console.log('Group info loaded:', response)
+    console.log('[slug] Resolved slug response:', response)
+    console.log('[slug] tenantGroupId:', response.tenantGroupId)
+    console.log('[slug] tenantId:', response.tenantId)
+    console.log('[slug] type:', response.type)
+
+    console.log('=== [SLUG].VUE DEBUG ===')
+    console.log('route.params:', route.params)
+    console.log('route.params.slug:', route.params.slug)
+    console.log('groupInfo:', groupInfo.value)
+    console.log('effectiveTenantGroupId:', effectiveTenantGroupId.value)
+    console.log('========================')
   } catch (err: any) {
     console.error('Slug resolve error:', err)
     

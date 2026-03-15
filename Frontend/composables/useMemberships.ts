@@ -98,7 +98,7 @@ export const useMemberships = () => {
     const createMembership = async (data: CreateMembershipDto, tenantGroupId: number): Promise<Membership> => {
         try {
             const payload: CreateMembershipCommand = {
-                tenantGroupId: tenantGroupId,
+                tenantGroupId: Number(tenantGroupId),
                 membership: data
             }
 

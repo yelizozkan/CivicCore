@@ -29,12 +29,25 @@
 
 <script setup lang="ts">
 //#region Imports
+import { onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import RegisterWizard from '~/components/Membership/RegisterWizard.vue'
 //#endregion
 
 //#region Page Metadata
 definePageMeta({
   layout: false
+})
+//#endregion
+
+//#region Debug
+const route = useRoute()
+onMounted(() => {
+  console.warn('=== MEMBERSHIP INDEX.VUE LOADED (No Slug!) ===')
+  console.warn('This page renders RegisterWizard WITHOUT a tenantGroupId!')
+  console.warn('Current URL path:', route.fullPath)
+  console.warn('If you expected [slug].vue, check your navigation URL')
+  console.warn('===============================================')
 })
 //#endregion
 
