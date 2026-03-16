@@ -5,10 +5,10 @@
     </div>
 
     <!-- KVKK Consent -->
-    <div class="consent-card" :class="{ 'approved': localData.kvkkAccepted, 'border-red-400': errors.kvkkAccepted }">
+    <div class="consent-card" :class="{ 'approved': props.formData.kvkkAccepted, 'border-red-400': errors.kvkkAccepted }">
       <div class="consent-checkbox clickable-area" @click.prevent="toggleConsent('kvkk')">
         <div class="checkbox-wrapper">
-          <input type="checkbox" :checked="localData.kvkkAccepted" readonly />
+          <input type="checkbox" :checked="props.formData.kvkkAccepted" readonly />
           <span class="checkmark"></span>
         </div>
         <span class="checkbox-label">
@@ -17,15 +17,15 @@
           </button>'ni okudum ve kabul ediyorum.
         </span>
       </div>
-      <span v-if="localData.kvkkAccepted" class="approved-badge">✓ Onaylandı</span>
+      <span v-if="props.formData.kvkkAccepted" class="approved-badge">✓ Onaylandı</span>
     </div>
     <div v-if="errors.kvkkAccepted" class="text-red-500 text-sm mt-1 mb-4 ml-1">{{ errors.kvkkAccepted }}</div>
 
     <!-- Explicit Consent -->
-    <div class="consent-card" :class="{ 'approved': localData.explicitConsentAccepted, 'border-red-400': errors.explicitConsentAccepted }">
+    <div class="consent-card" :class="{ 'approved': props.formData.explicitConsentAccepted, 'border-red-400': errors.explicitConsentAccepted }">
       <div class="consent-checkbox clickable-area" @click.prevent="toggleConsent('explicit')">
         <div class="checkbox-wrapper">
-          <input type="checkbox" :checked="localData.explicitConsentAccepted" readonly />
+          <input type="checkbox" :checked="props.formData.explicitConsentAccepted" readonly />
           <span class="checkmark"></span>
         </div>
         <span class="checkbox-label">
@@ -34,7 +34,7 @@
           </button>'nı okudum ve kabul ediyorum.
         </span>
       </div>
-      <span v-if="localData.explicitConsentAccepted" class="approved-badge">✓ Onaylandı</span>
+      <span v-if="props.formData.explicitConsentAccepted" class="approved-badge">✓ Onaylandı</span>
     </div>
     <div v-if="errors.explicitConsentAccepted" class="text-red-500 text-sm mt-1 mb-4 ml-1">{{ errors.explicitConsentAccepted }}</div>
 
@@ -189,18 +189,15 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 
-interface FormData {
-  kvkkAccepted: boolean
-  explicitConsentAccepted: boolean
-  [key: string]: any
-}
-
-const props = defineProps<{ modelValue: FormData }>()
-const emit = defineEmits(['update:modelValue'])
-
-const localData = reactive({ ...props.modelValue })
+const props = defineProps<{
+  formData: {
+    kvkkAccepted: boolean
+    explicitConsentAccepted: boolean
+    [key: string]: any
+  }
+}>()
 
 // Modal state
 const activeModal = ref<'kvkk' | 'explicit' | null>(null)
@@ -209,26 +206,14 @@ const explicitScrollRef = ref<HTMLElement | null>(null)
 const kvkkScrolledToBottom = ref(false)
 const explicitScrolledToBottom = ref(false)
 
-// Watch for external changes
-watch(() => props.modelValue, (newVal) => {
-  Object.assign(localData, newVal)
-}, { deep: true })
-
-// Emit changes
-watch(localData, (newVal) => {
-  emit('update:modelValue', { ...props.modelValue, ...newVal })
-}, { deep: true })
-
 // Modal functions
 const openModal = (type: 'kvkk' | 'explicit') => {
   activeModal.value = type
-  // Reset scroll state when opening
   if (type === 'kvkk') {
     kvkkScrolledToBottom.value = false
   } else {
     explicitScrolledToBottom.value = false
   }
-  // Prevent body scroll
   document.body.style.overflow = 'hidden'
 }
 
@@ -240,10 +225,8 @@ const closeModal = () => {
 const handleScroll = (type: 'kvkk' | 'explicit') => {
   const scrollRef = type === 'kvkk' ? kvkkScrollRef.value : explicitScrollRef.value
   if (!scrollRef) return
-
   const { scrollTop, scrollHeight, clientHeight } = scrollRef
-  const isAtBottom = scrollTop + clientHeight >= scrollHeight - 20 // 20px tolerance
-
+  const isAtBottom = scrollTop + clientHeight >= scrollHeight - 20
   if (type === 'kvkk') {
     kvkkScrolledToBottom.value = isAtBottom
   } else {
@@ -252,26 +235,28 @@ const handleScroll = (type: 'kvkk' | 'explicit') => {
 }
 
 const acceptConsent = (type: 'kvkk' | 'explicit') => {
+  // Directly mutate props.formData (reactive object from parent ref)
   if (type === 'kvkk') {
-    localData.kvkkAccepted = true
+    props.formData.kvkkAccepted = true
   } else {
-    localData.explicitConsentAccepted = true
+    props.formData.explicitConsentAccepted = true
   }
+  console.log('[StepConsents] acceptConsent:', type, 'kvkk:', props.formData.kvkkAccepted, 'explicit:', props.formData.explicitConsentAccepted)
   closeModal()
 }
 
 const toggleConsent = (type: 'kvkk' | 'explicit') => {
   if (type === 'kvkk') {
-    if (localData.kvkkAccepted) {
-      localData.kvkkAccepted = false // Allow unchecking
+    if (props.formData.kvkkAccepted) {
+      props.formData.kvkkAccepted = false
     } else {
-      openModal('kvkk') // If not accepted, must open modal to accept
+      openModal('kvkk')
     }
   } else {
-    if (localData.explicitConsentAccepted) {
-      localData.explicitConsentAccepted = false // Allow unchecking
+    if (props.formData.explicitConsentAccepted) {
+      props.formData.explicitConsentAccepted = false
     } else {
-      openModal('explicit') // If not accepted, must open modal to accept
+      openModal('explicit')
     }
   }
 }
@@ -279,16 +264,16 @@ const toggleConsent = (type: 'kvkk' | 'explicit') => {
 // Validation
 const errors = ref<Record<string, string>>({})
 
-const validate = (): boolean => {
+const validate = async (): Promise<boolean> => {
   errors.value = {}
 
-  if (!localData.kvkkAccepted) {
+  if (!props.formData.kvkkAccepted) {
     errors.value.kvkkAccepted = 'KVKK Aydınlatma Metnini onaylamanız gerekmektedir'
   }
-  if (!localData.explicitConsentAccepted) {
+  if (!props.formData.explicitConsentAccepted) {
     errors.value.explicitConsentAccepted = 'Açık Rıza Beyanını onaylamanız gerekmektedir'
   }
-  
+
   return Object.keys(errors.value).length === 0
 }
 

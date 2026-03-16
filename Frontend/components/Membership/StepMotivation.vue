@@ -11,62 +11,48 @@
       </div>
     </div>
 
-    <div class="input-group">
-      <label class="input-label">Derneğe Katılım Motivasyonunuz <span class="required">*</span></label>
-      <textarea 
-        v-model="localData.motivationText" 
-        class="input-field textarea-field" 
-        :class="{ 'border-red-500 focus:border-red-500 focus:ring-red-100': errors.motivationText }"
-        placeholder="Açıklamanızı buraya yazın..."
-        rows="8"
-      ></textarea>
-      
-      <div v-if="errors.motivationText" class="text-red-500 text-sm mt-1 mb-1">{{ errors.motivationText }}</div>
-
-      <div class="char-count" :class="{ 'warning': charCount < 50 && charCount > 0, 'success': charCount >= 50 }">
-        {{ charCount }} / 500 karakter
-        <span v-if="charCount < 50" class="hint">(en az 50 karakter)</span>
-        <span v-else class="hint">✓</span>
+    <v-form ref="form" v-model="isValid">
+      <div>
+        <label class="field-label">Derneğe Katılım Motivasyonunuz <span class="required">*</span></label>
+        <v-textarea
+          v-model="formData.motivationText"
+          :rules="[rules.required, rules.minLength(50)]"
+          variant="outlined"
+          density="comfortable"
+          placeholder="Açıklamanızı buraya yazın..."
+          rows="8"
+          hide-details="auto"
+          class="mb-2"
+          counter
+          maxlength="500"
+        />
+        <div class="char-count" :class="{ 'warning': charCount < 50 && charCount > 0, 'success': charCount >= 50 }">
+          {{ charCount }} / 500 karakter
+          <span v-if="charCount < 50" class="hint">(en az 50 karakter)</span>
+          <span v-else class="hint">✓</span>
+        </div>
       </div>
-    </div>
+    </v-form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, computed, ref } from 'vue'
+import { ref, computed } from 'vue'
 
-interface FormData {
-  motivationText: string
-  [key: string]: any
-}
+const props = defineProps<{
+  formData: any
+}>()
 
-const props = defineProps<{ modelValue: FormData }>()
-const emit = defineEmits(['update:modelValue'])
+const { validationRules: rules } = useValidators()
+const form = ref()
+const isValid = ref(false)
 
-const localData = reactive({ ...props.modelValue })
+const charCount = computed(() => props.formData.motivationText?.length || 0)
 
-const charCount = computed(() => localData.motivationText?.length || 0)
-
-watch(localData, (newVal) => {
-  emit('update:modelValue', { ...props.modelValue, ...newVal })
-}, { deep: true })
-
-watch(() => props.modelValue, (newVal) => {
-  Object.assign(localData, newVal)
-}, { deep: true })
-
-const errors = ref<Record<string, string>>({})
-
-const validate = (): boolean => {
-  errors.value = {}
-
-  if (!localData.motivationText?.trim()) {
-    errors.value.motivationText = 'Motivasyon alanı zorunludur'
-  } else if (localData.motivationText.length < 50) {
-    errors.value.motivationText = 'Lütfen en az 50 karakter giriniz'
-  }
-  
-  return Object.keys(errors.value).length === 0
+const validate = async (): Promise<boolean> => {
+  if (!form.value) return false
+  const { valid } = await form.value.validate()
+  return valid
 }
 
 defineExpose({ validate })
@@ -94,17 +80,7 @@ defineExpose({ validate })
   margin-bottom: 4px;
 }
 
-.step-description {
-  font-size: 16px;
-  color: #64748b;
-}
-
-.input-group {
-  display: block;
-  margin-bottom: 20px;
-}
-
-.input-label {
+.field-label {
   display: block;
   font-size: 14px;
   font-weight: 500;
@@ -116,36 +92,8 @@ defineExpose({ validate })
   color: #ef4444;
 }
 
-.input-field {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  font-size: 16px;
-  color: #1e293b;
-  background-color: white;
-  transition: all 0.2s ease;
-  outline: none;
-}
-
-.input-field:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.input-field::placeholder {
-  color: #94a3b8;
-}
-
-.textarea-field {
-  resize: vertical;
-  min-height: 120px;
-  line-height: 1.6;
-  font-family: inherit;
-}
-
 .char-count {
-  margin-top: 8px;
+  margin-top: 6px;
   font-size: 13px;
   color: #64748b;
   text-align: right;
@@ -163,7 +111,6 @@ defineExpose({ validate })
   margin-left: 4px;
 }
 
-/* Tips Box - Nötr/Gri */
 .tips-container.compact-tips {
   margin-top: 0;
   margin-bottom: 24px;

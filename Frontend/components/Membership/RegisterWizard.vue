@@ -20,10 +20,9 @@
         <Transition :name="transitionName" mode="out-in">
           <component 
             :is="currentStepComponent" 
-            v-model="formData"
+            :form-data="formData"
             ref="currentStepRef"
             @edit="handleEdit"
-            :formData="formData" 
           />
         </Transition>
       </div>
@@ -221,11 +220,15 @@ const showSuccessToast = (message: string) => {
 }
 
 const handleNext = async () => {
-  // Validate current step
+  // Validate current step using async validate()
   if (currentStepRef.value && typeof currentStepRef.value.validate === 'function') {
     const isValid = await currentStepRef.value.validate()
     if (!isValid) {
-      showError('Lütfen tüm zorunlu alanları doldurun.')
+      // Vuetify shows inline errors, so no toast needed for steps 1-5
+      // Still show for consents which use custom error display
+      if (currentStep.value === 5) {
+        showError('Lütfen tüm onayları verin.')
+      }
       return
     }
   }
@@ -319,20 +322,30 @@ const submitForm = async () => {
     console.log('Membership Data to be wrapped:', JSON.stringify(membershipData, null, 2))
     console.log('=====================')
 
-    await createMembership(membershipData as any, tenantId)
+    const response = await createMembership(membershipData as any, tenantId)
+    console.log('=== API SUCCESS ===')
+    console.log('Response:', response)
+    console.log('===================')
     
     // Yönlendirme
     router.push('/membership/success')
     
   } catch (err: any) {
-    console.error('Başvuru gönderilemedi:', err)
+    console.log('=== API ERROR ===')
+    console.log('Error object:', err)
+    console.log('Error.data:', err?.data)
+    console.log('Error.message:', err?.message)
+    console.log('Error.status:', err?.status || err?.statusCode)
+    console.log('=================')
     
     // Hata mesajını göster
-    if (err.data?.errors) {
+    if (err?.data?.errors) {
       const errorMessages = Object.values(err.data.errors).flat().join(', ')
       showError(errorMessages)
+    } else if (err?.data?.title) {
+      showError(err.data.title)
     } else {
-      showError('Başvuru gönderilemedi. Lütfen tüm alanları kontrol edin.')
+      showError('Bağlantı hatası. Lütfen tüm alanları kontrol edin ve tekrar deneyin.')
     }
   } finally {
     isSubmitting.value = false
