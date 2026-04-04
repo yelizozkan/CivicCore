@@ -1,9 +1,9 @@
   import type { NavigationItem } from '~/types'
 
   export const navigationItems: NavigationItem[] = [
-    { section: 'MENU' },
+    { section: 'MENÜ' },
     {
-      title: 'Dashboard',
+      title: 'Gösterge Paneli',
       icon: 'mdi-view-dashboard-outline',
       to: '/dashboard',
     },

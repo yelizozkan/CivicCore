@@ -41,49 +41,65 @@
         <!-- Stats Overview -->
         <v-row class="mb-6 mx-0 group-stats-row">
           <v-col cols="12" sm="6" md="3" class="px-2">
-            <v-card class="rounded-xl h-100 border border-gray-200 bg-white hover:shadow-md transition-shadow duration-300" elevation="0" style="padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;">
-              <v-card-text class="d-flex flex-column align-start p-0">
-                <div class="d-flex align-center justify-center rounded-lg bg-blue-50 mb-6" style="width: 44px; height: 44px;">
-                  <v-icon color="#3b82f6" size="24">mdi-account-multiple</v-icon>
+            <v-card class="rounded-xl h-100 border border-gray-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300" elevation="0" style="padding: 20px 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;">
+              <v-card-text class="d-flex flex-column justify-space-between p-0" style="height:100%;">
+                <div class="d-flex justify-end">
+                  <div class="d-flex align-center justify-center rounded-lg bg-blue-50" style="width: 32px; height: 32px;">
+                    <v-icon color="#2563eb" size="18">mdi-account-multiple</v-icon>
+                  </div>
                 </div>
-                <div class="text-[32px] font-bold text-slate-800 leading-none mb-1">{{ stats.totalMembers }}</div>
-                <div class="text-sm font-medium text-slate-500 mt-1">Aktif Üyeler</div>
+                <div class="mt-4">
+                  <div style="font-size: 2rem; font-weight: 700; color: #1e293b; line-height: 1;">{{ stats.totalMembers }}</div>
+                  <div style="font-size: 0.75rem; color: #6B7280; margin-top: 4px;">Aktif Üyeler</div>
+                </div>
               </v-card-text>
             </v-card>
           </v-col>
           
           <v-col cols="12" sm="6" md="3" class="px-2">
-            <v-card class="rounded-xl h-100 border border-gray-200 bg-white hover:shadow-md transition-shadow duration-300" elevation="0" style="padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;">
-              <v-card-text class="d-flex flex-column align-start p-0">
-                <div class="d-flex align-center justify-center rounded-lg bg-amber-50 mb-6" style="width: 44px; height: 44px;">
-                  <v-icon color="#f59e0b" size="24">mdi-clock-outline</v-icon>
+            <v-card class="rounded-xl h-100 border border-gray-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300" elevation="0" style="padding: 20px 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;">
+              <v-card-text class="d-flex flex-column justify-space-between p-0" style="height:100%;">
+                <div class="d-flex justify-end">
+                  <div class="d-flex align-center justify-center rounded-lg bg-amber-50" style="width: 32px; height: 32px;">
+                    <v-icon color="#d97706" size="18">mdi-clock-outline</v-icon>
+                  </div>
                 </div>
-                <div class="text-[32px] font-bold text-slate-800 leading-none mb-1">{{ stats.pendingCount }}</div>
-                <div class="text-sm font-medium text-slate-500 mt-1">Bekleyen İnceleme</div>
+                <div class="mt-4">
+                  <div style="font-size: 2rem; font-weight: 700; color: #1e293b; line-height: 1;">{{ stats.pendingCount }}</div>
+                  <div style="font-size: 0.75rem; color: #6B7280; margin-top: 4px;">Bekleyen İnceleme</div>
+                </div>
               </v-card-text>
             </v-card>
           </v-col>
 
           <v-col cols="12" sm="6" md="3" class="px-2">
-             <v-card class="rounded-xl h-100 border border-gray-200 bg-white hover:shadow-md transition-shadow duration-300" elevation="0" style="padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;">
-              <v-card-text class="d-flex flex-column align-start p-0">
-                <div class="d-flex align-center justify-center rounded-lg bg-purple-50 mb-6" style="width: 44px; height: 44px;">
-                  <v-icon color="#8b5cf6" size="24">mdi-cash-clock</v-icon>
+            <v-card class="rounded-xl h-100 border border-gray-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300" elevation="0" style="padding: 20px 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;">
+              <v-card-text class="d-flex flex-column justify-space-between p-0" style="height:100%;">
+                <div class="d-flex justify-end">
+                  <div class="d-flex align-center justify-center rounded-lg bg-purple-50" style="width: 32px; height: 32px;">
+                    <v-icon color="#7c3aed" size="18">mdi-cash-clock</v-icon>
+                  </div>
                 </div>
-                <div class="text-[32px] font-bold text-slate-800 leading-none mb-1">{{ stats.waitingPaymentCount }}</div>
-                <div class="text-sm font-medium text-slate-500 mt-1">Ödeme Bekliyor</div>
+                <div class="mt-4">
+                  <div style="font-size: 2rem; font-weight: 700; color: #1e293b; line-height: 1;">{{ stats.waitingPaymentCount }}</div>
+                  <div style="font-size: 0.75rem; color: #6B7280; margin-top: 4px;">Ödeme Bekliyor</div>
+                </div>
               </v-card-text>
             </v-card>
           </v-col>
 
           <v-col cols="12" sm="6" md="3" class="px-2">
-            <v-card class="rounded-xl h-100 border border-gray-200 bg-white hover:shadow-md transition-shadow duration-300" elevation="0" style="padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;">
-              <v-card-text class="d-flex flex-column align-start p-0">
-                <div class="d-flex align-center justify-center rounded-lg bg-red-50 mb-6" style="width: 44px; height: 44px;">
-                  <v-icon color="#ef4444" size="24">mdi-alert-circle-outline</v-icon>
+            <v-card class="rounded-xl h-100 border border-gray-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300" elevation="0" style="padding: 20px 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;">
+              <v-card-text class="d-flex flex-column justify-space-between p-0" style="height:100%;">
+                <div class="d-flex justify-end">
+                  <div class="d-flex align-center justify-center rounded-lg bg-red-100" style="width: 32px; height: 32px;">
+                    <v-icon color="#dc2626" size="18">mdi-alert-circle-outline</v-icon>
+                  </div>
                 </div>
-                <div class="text-[32px] font-bold text-slate-800 leading-none mb-1">{{ stats.overdueCount }}</div>
-                <div class="text-sm font-medium text-slate-500 mt-1">Gecikmiş Ödemeler</div>
+                <div class="mt-4">
+                  <div style="font-size: 2rem; font-weight: 700; color: #1e293b; line-height: 1;">{{ stats.overdueCount }}</div>
+                  <div style="font-size: 0.75rem; color: #6B7280; margin-top: 4px;">Gecikmiş Ödemeler</div>
+                </div>
               </v-card-text>
             </v-card>
           </v-col>
@@ -94,23 +110,23 @@
           <h2 class="text-[16px] font-bold text-gray-900 mb-3 px-1">Gereken İşlemler</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             
-            <div v-if="stats.pendingCount > 0" class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/60 rounded-xl shadow-sm transition-all hover:shadow-md">
+            <div v-if="stats.pendingCount > 0" class="flex items-center justify-between px-4 py-3 bg-white border border-gray-200 border-l-4 border-l-amber-500 rounded-xl shadow-sm transition-all hover:shadow-md">
               <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-amber-100 rounded-lg flex items-center justify-center shrink-0">
+                <div class="w-9 h-9 bg-amber-50 rounded-lg flex items-center justify-center shrink-0">
                   <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
                   </svg>
                 </div>
                 <div>
-                  <span class="text-sm font-medium text-amber-900">{{ stats.pendingCount }} yeni başvuru</span>
-                  <span class="text-sm text-amber-700"> incelemenizi bekliyor</span>
+                  <span class="text-sm font-bold text-slate-800">{{ stats.pendingCount }} yeni başvuru</span>
+                  <span class="text-sm text-slate-500"> incelemenizi bekliyor</span>
                 </div>
               </div>
               <div class="flex items-center gap-2">
-                <button @click="navigateTo('/memberships?tab=pending')" class="px-4 py-1.5 text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors">
+                <button @click="navigateTo('/memberships?tab=pending')" class="px-5 py-1.5 text-sm font-semibold bg-blue-600 hover:bg-blue-700 shadow-sm text-white rounded-lg transition-colors">
                   İncele
                 </button>
-                <button class="p-1 text-amber-400 hover:text-amber-600 hover:bg-amber-100 rounded transition-colors hidden sm:block">
+                <button class="p-1 text-gray-300 hover:text-gray-500 rounded transition-colors hidden sm:block">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                   </svg>
@@ -118,23 +134,23 @@
               </div>
             </div>
 
-            <div v-if="stats.waitingPaymentCount > 0" class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/60 rounded-xl shadow-sm transition-all hover:shadow-md">
+            <div v-if="stats.waitingPaymentCount > 0" class="flex items-center justify-between px-4 py-3 bg-white border border-gray-200 border-l-4 border-l-blue-500 rounded-xl shadow-sm transition-all hover:shadow-md">
               <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
+                <div class="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
                   <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
                   </svg>
                 </div>
                 <div>
-                  <span class="text-sm font-medium text-blue-900">{{ stats.waitingPaymentCount }} üye</span>
-                  <span class="text-sm text-blue-700"> ödeme bekliyor</span>
+                  <span class="text-sm font-bold text-slate-800">{{ stats.waitingPaymentCount }} üye</span>
+                  <span class="text-sm text-slate-500"> ödeme bekliyor</span>
                 </div>
               </div>
               <div class="flex items-center gap-2">
-                <button @click="navigateTo('/memberships?tab=preapproved')" class="px-4 py-1.5 text-sm font-medium bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors">
+                <button @click="navigateTo('/memberships?tab=preapproved')" class="px-5 py-1.5 text-sm font-semibold bg-blue-500 hover:bg-blue-600 shadow-sm text-white rounded-lg transition-colors">
                   Listeyi Gör
                 </button>
-                <button class="p-1 text-blue-400 hover:text-blue-600 hover:bg-blue-100 rounded transition-colors hidden sm:block">
+                <button class="p-1 text-gray-300 hover:text-gray-500 rounded transition-colors hidden sm:block">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                   </svg>
@@ -142,23 +158,23 @@
               </div>
             </div>
 
-            <div v-if="stats.overdueCount > 0" class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-red-50 to-rose-50 border border-red-200/60 rounded-xl shadow-sm transition-all hover:shadow-md">
+            <div v-if="stats.overdueCount > 0" class="flex items-center justify-between px-4 py-3 bg-white border border-gray-200 border-l-4 border-l-red-500 rounded-xl shadow-sm transition-all hover:shadow-md">
               <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-red-100 rounded-lg flex items-center justify-center shrink-0">
+                <div class="w-9 h-9 bg-red-50 rounded-lg flex items-center justify-center shrink-0">
                   <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                   </svg>
                 </div>
                 <div>
-                  <span class="text-sm font-medium text-red-900">{{ stats.overdueCount }} üye</span>
-                  <span class="text-sm text-red-700"> gecikmiş ödemesi var</span>
+                  <span class="text-sm font-bold text-slate-800">{{ stats.overdueCount }} üye</span>
+                  <span class="text-sm text-slate-500"> gecikmiş ödemesi var</span>
                 </div>
               </div>
               <div class="flex items-center gap-2">
-                <button @click="navigateTo('/memberships?tab=inactive')" class="px-4 py-1.5 text-sm font-medium bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
+                <button @click="navigateTo('/memberships?tab=inactive')" class="px-5 py-1.5 text-sm font-semibold bg-red-500 hover:bg-red-600 shadow-sm text-white rounded-lg transition-colors">
                   İşlem Yap
                 </button>
-                <button class="p-1 text-red-400 hover:text-red-600 hover:bg-red-100 rounded transition-colors hidden sm:block">
+                <button class="p-1 text-gray-300 hover:text-gray-500 rounded transition-colors hidden sm:block">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                   </svg>
@@ -227,12 +243,20 @@
 
                  <template v-slot:item.actions="{ item }">
                   <div class="flex items-center justify-end gap-2">
-                    <button class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-white hover:shadow-sm hover:border-gray-300 transition-all flex items-center justify-center">
-                      <v-icon size="18">mdi-download-outline</v-icon>
-                    </button>
-                    <button @click="navigateTo(`/memberships/${item.id}`)" class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-white hover:shadow-sm hover:border-gray-300 transition-all flex items-center justify-center">
-                      <v-icon size="18">mdi-eye-outline</v-icon>
-                    </button>
+                    <v-tooltip location="top" text="Dosyayı İndir">
+                      <template v-slot:activator="{ props }">
+                        <button v-bind="props" class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-white hover:shadow-sm hover:border-blue-200 hover:text-blue-600 transition-all flex items-center justify-center">
+                          <v-icon size="18">mdi-download-outline</v-icon>
+                        </button>
+                      </template>
+                    </v-tooltip>
+                    <v-tooltip location="top" text="Detayları İncele">
+                      <template v-slot:activator="{ props }">
+                        <button v-bind="props" @click="navigateTo(`/memberships/${item.id}`)" class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-white hover:shadow-sm hover:border-amber-200 hover:text-amber-600 transition-all flex items-center justify-center">
+                          <v-icon size="18">mdi-eye-outline</v-icon>
+                        </button>
+                      </template>
+                    </v-tooltip>
                   </div>
                 </template>
                 
@@ -256,34 +280,34 @@
               
               <div class="flex flex-col gap-2 mb-6">
                 
-                <button @click="copyRegistrationLink" class="group flex items-center justify-between w-full px-4 py-3 rounded-xl bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-100 hover:-translate-y-0.5 transition-all text-left">
+                <button @click="copyRegistrationLink" class="group flex items-center justify-between w-full px-4 py-3.5 rounded-xl bg-white border border-gray-100 shadow-sm hover:bg-slate-50 hover:shadow-md hover:border-blue-200 transition-all text-left transform active:scale-[0.98]">
                   <div class="flex items-center gap-3">
-                    <div class="flex flex-center shrink-0">
-                      <v-icon size="22" color="#64748b" class="group-hover:text-blue-500 transition-colors">mdi-account-plus-outline</v-icon>
+                    <div class="flex flex-center shrink-0 w-8 h-8 rounded-lg bg-slate-50 group-hover:bg-blue-50 transition-colors items-center justify-center border border-transparent group-hover:border-blue-100">
+                      <v-icon size="20" color="#64748b" class="group-hover:text-blue-500 transition-colors">mdi-account-plus-outline</v-icon>
                     </div>
                     <span class="text-[14px] font-semibold text-slate-700 group-hover:text-slate-900">Üye Kayıt Linki</span>
                   </div>
-                  <v-icon size="18" color="#94a3b8" class="group-hover:text-blue-500">mdi-content-copy</v-icon>
+                  <v-icon size="20" color="#94a3b8" class="group-hover:text-blue-500 transition-colors">mdi-content-copy</v-icon>
                 </button>
 
-                <button class="group flex items-center justify-between w-full px-4 py-3 rounded-xl bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-amber-100 hover:-translate-y-0.5 transition-all text-left">
+                <button class="group flex items-center justify-between w-full px-4 py-3.5 rounded-xl bg-white border border-gray-100 shadow-sm hover:bg-slate-50 hover:shadow-md hover:border-amber-200 transition-all text-left transform active:scale-[0.98]">
                   <div class="flex items-center gap-3">
-                    <div class="flex flex-center shrink-0">
-                      <v-icon size="22" color="#64748b" class="group-hover:text-amber-500 transition-colors">mdi-file-export-outline</v-icon>
+                    <div class="flex flex-center shrink-0 w-8 h-8 rounded-lg bg-slate-50 group-hover:bg-amber-50 transition-colors items-center justify-center border border-transparent group-hover:border-amber-100">
+                      <v-icon size="20" color="#64748b" class="group-hover:text-amber-500 transition-colors">mdi-file-export-outline</v-icon>
                     </div>
                     <span class="text-[14px] font-semibold text-slate-700 group-hover:text-slate-900">Üye Listesini Dışa Aktar</span>
                   </div>
-                  <v-icon size="18" color="#94a3b8" class="group-hover:text-amber-500">mdi-chevron-right</v-icon>
+                  <v-icon size="20" color="#94a3b8" class="group-hover:text-amber-500 transition-colors">mdi-chevron-right</v-icon>
                 </button>
 
-                <button class="group flex items-center justify-between w-full px-4 py-3 rounded-xl bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-purple-100 hover:-translate-y-0.5 transition-all text-left">
+                <button class="group flex items-center justify-between w-full px-4 py-3.5 rounded-xl bg-white border border-gray-100 shadow-sm hover:bg-slate-50 hover:shadow-md hover:border-purple-200 transition-all text-left transform active:scale-[0.98]">
                   <div class="flex items-center gap-3">
-                    <div class="flex flex-center shrink-0">
-                      <v-icon size="22" color="#64748b" class="group-hover:text-purple-500 transition-colors">mdi-cog-outline</v-icon>
+                    <div class="flex flex-center shrink-0 w-8 h-8 rounded-lg bg-slate-50 group-hover:bg-purple-50 transition-colors items-center justify-center border border-transparent group-hover:border-purple-100">
+                      <v-icon size="20" color="#64748b" class="group-hover:text-purple-500 transition-colors">mdi-cog-outline</v-icon>
                     </div>
                     <span class="text-[14px] font-semibold text-slate-700 group-hover:text-slate-900">Grup Ayarları</span>
                   </div>
-                  <v-icon size="18" color="#94a3b8" class="group-hover:text-purple-500">mdi-chevron-right</v-icon>
+                  <v-icon size="20" color="#94a3b8" class="group-hover:text-purple-500 transition-colors">mdi-chevron-right</v-icon>
                 </button>
 
               </div>
@@ -363,12 +387,20 @@
                   </template>
                    <template v-slot:item.actions="{ item }">
                     <div class="flex items-center justify-end gap-2">
-                      <button class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-white hover:shadow-sm hover:border-gray-300 transition-all flex items-center justify-center">
-                        <v-icon size="18">mdi-download-outline</v-icon>
-                      </button>
-                      <button @click="navigateTo(`/memberships/${item.id}`)" class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-white hover:shadow-sm hover:border-gray-300 transition-all flex items-center justify-center">
-                        <v-icon size="18">mdi-eye-outline</v-icon>
-                      </button>
+                      <v-tooltip location="top" text="Dosyayı İndir">
+                        <template v-slot:activator="{ props }">
+                          <button v-bind="props" class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-white hover:shadow-sm hover:border-blue-200 hover:text-blue-600 transition-all flex items-center justify-center">
+                            <v-icon size="18">mdi-download-outline</v-icon>
+                          </button>
+                        </template>
+                      </v-tooltip>
+                      <v-tooltip location="top" text="Detayları İncele">
+                        <template v-slot:activator="{ props }">
+                          <button v-bind="props" @click="navigateTo(`/memberships/${item.id}`)" class="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-white hover:shadow-sm hover:border-amber-200 hover:text-amber-600 transition-all flex items-center justify-center">
+                            <v-icon size="18">mdi-eye-outline</v-icon>
+                          </button>
+                        </template>
+                      </v-tooltip>
                     </div>
                   </template>
                   <template v-slot:no-data>
@@ -583,20 +615,24 @@ definePageMeta({
 }
 :deep(.custom-primestay-table .v-table__wrapper > table > thead > tr > th) {
   background-color: #f8fafc !important;
-  color: #64748b !important;
-  font-size: 12px !important;
+  color: #374151 !important;
+  font-size: 0.7rem !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
-  letter-spacing: 0.5px !important;
+  letter-spacing: 0.05em !important;
   padding: 12px 16px !important;
   border-bottom: 1px solid #f1f5f9 !important;
 }
 :deep(.custom-primestay-table .v-table__wrapper > table > tbody > tr > td) {
   padding: 16px !important;
   border-bottom: 1px solid #f1f5f9 !important;
+  cursor: pointer;
+}
+:deep(.custom-primestay-table .v-table__wrapper > table > tbody > tr:nth-child(even) > td) {
+  background-color: #fafafa !important;
 }
 :deep(.custom-primestay-table .v-table__wrapper > table > tbody > tr:hover > td) {
-  background-color: #f8fafc !important;
+  background-color: #F9FAFB !important;
 }
 
 /* Subtle Custom Scrollbar for the table wrapper */

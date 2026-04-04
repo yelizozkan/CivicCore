@@ -16,44 +16,35 @@
     >
       <!-- Logo Section -->
       <div 
-        class="flex items-center transition-all overflow-hidden whitespace-nowrap h-20" 
-        :class="isSidebarOpen ? 'justify-between px-4' : 'justify-center cursor-pointer hover:bg-slate-50'"
+        class="flex items-center transition-all overflow-hidden"
+        :class="isSidebarOpen ? 'justify-between px-4 py-0' : 'justify-center h-16 cursor-pointer hover:bg-slate-50'"
         @click="!isSidebarOpen && !isMobile && toggleSidebar()"
       >
         <!-- Sidebar Kapalı -->
         <div v-if="!isSidebarOpen" class="flex justify-center p-2">
-          <img src="/images/busaderlogo.png" alt="BUSADER" class="w-12 h-12 object-contain" />
+          <img src="/images/busaderlogo.png" alt="BUSADER" class="w-32 h-32 object-contain" />
         </div>
 
-        <!-- Sidebar Açık -->
-        <div v-else class="flex items-center gap-3">
-          <img src="/images/busaderlogo.png" alt="BUSADER" class="w-12 h-12 object-contain" />
-          <div class="flex flex-col mt-1">
-            <h1 class="font-bold text-slate-800 text-[17px] leading-tight">
-              {{ tenantGroup?.name || 'BUSADER' }}
-            </h1>
-            <p class="text-[11px] font-medium text-purple-600 tracking-wide">
-              Yönetim Paneli
-            </p>
-          </div>
+        <!-- Sidebar Açık: Sadece Logo + Toggle -->
+        <div v-else class="flex items-center justify-between w-full">
+          <img src="/images/busaderlogo.png" alt="BUSADER" class="w-28 h-28 object-contain shrink-0" />
+          <button v-if="!isMobile" @click.stop="toggleSidebar" class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors focus:outline-none shrink-0">
+            <Icon name="mdi:dock-left" class="h-5 w-5" />
+          </button>
         </div>
-        
-        <button v-if="isSidebarOpen && !isMobile" @click.stop="toggleSidebar" class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors focus:outline-none shrink-0">
-          <Icon name="mdi:dock-left" class="h-5 w-5" />
-        </button>
       </div>
 
       <!-- Quick Actions / Search -->
-      <div class="px-4 pt-4 pb-2 transition-all overflow-hidden whitespace-nowrap" :class="!isSidebarOpen ? 'px-2' : ''">
+      <div class="px-4 pt-2 pb-2 transition-all overflow-hidden whitespace-nowrap" :class="!isSidebarOpen ? 'px-2' : ''">
         <h3 
           class="text-[11px] font-semibold text-slate-400 uppercase tracking-[0.05em] mb-2 px-1 transition-opacity"
           v-if="isSidebarOpen"
         >
-          QUICK ACTIONS
+          HIZLI İŞLEMLER
         </h3>
         <div class="relative" v-if="isSidebarOpen">
           <Icon name="mdi:magnify" class="absolute left-3 top-2.5 text-slate-400 h-5 w-5" />
-          <input type="text" placeholder="Search" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-lg pl-10 pr-10 py-2.5 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 transition-all">
+          <input type="text" placeholder="Ara" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-lg pl-10 pr-10 py-2.5 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 transition-all">
           <div class="absolute right-2 top-1.5 flex items-center justify-center w-6 h-6 bg-white border border-slate-200 rounded text-[11px] text-slate-500 font-medium shadow-sm">
             ⌘
           </div>
@@ -133,9 +124,8 @@
             <v-tooltip :disabled="isSidebarOpen" location="right">
               <template v-slot:activator="{ props }">
                 <div class="flex items-center gap-3 overflow-hidden" v-bind="props">
-                  <div class="w-10 h-10 shrink-0 bg-slate-100 border border-slate-200 overflow-hidden rounded-full flex items-center justify-center">
-                    <img v-if="userInfo.avatar" :src="userInfo.avatar" class="w-full h-full object-cover">
-                    <Icon v-else name="mdi:account" class="w-5 h-5 text-slate-400" />
+                  <div class="w-10 h-10 shrink-0 overflow-hidden rounded-full" style="border-radius: 50%;">
+                    <img :src="userInfo.avatar || '/images/avataaars.png'" class="w-full h-full object-cover" style="border-radius:50%;">
                   </div>
                   <div v-if="isSidebarOpen" class="flex-1 flex flex-col min-w-0 transition-opacity duration-300">
                     <span class="text-sm font-medium text-slate-800 truncate">{{ userInfo.name || 'System Administrator' }}</span>
@@ -194,19 +184,35 @@ const isSidebarOpen = ref(true)
 const showUserMenu = ref(false)
 const authStore = useAuthStore()
 const tenantGroup = computed(() => authStore.getTenantGroup)
-const authUtils = useAuth() // <-- asıl yetki fonksiyonları burada
+const authUtils = useAuth() // <-- asÄ±l yetki fonksiyonlarÄ± burada
 const router = useRouter()
+
+// UI Helpers for Avatar
+const getInitials = (name) => {
+  if (!name || name === 'KullanÄ±cÄ±') return 'HG'
+  const parts = name.trim().split(' ')
+  if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+  return name.substring(0, 2).toUpperCase()
+}
+
+const getAvatarColor = (name) => {
+  if (!name || name === 'KullanÄ±cÄ±') return '#a78bfa'
+  const colors = ['#f87171', '#fb923c', '#fbbf24', '#34d399', '#38bdf8', '#818cf8', '#a78bfa', '#f472b6']
+  let hash = 0
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash)
+  return colors[Math.abs(hash) % colors.length]
+}
 
 // App data
 const { loadAppData, appData } = useAppData()
 
-// Kullanıcı bilgileri - auth store'dan al
+// KullanÄ±cÄ± bilgileri - auth store'dan al
 const userInfo = computed(() => ({
-  name: authStore.userFullName || 'Kullanıcı',
+  name: authStore.userFullName || 'KullanÄ±cÄ±',
   email: authStore.user?.email || ''
 }))
 
-// Yetkiye göre menüleri filtrele
+// Yetkiye gÃ¶re menÃ¼leri filtrele
 const visibleMenus = computed(() => {
   return filterNavigationByPermissions(
     navigationItems,
@@ -224,11 +230,11 @@ const logout = async () => {
     await authUtils.logout()
     showUserMenu.value = false
   } catch (error) {
-    console.error('Çıkış yapılırken bir hata oluştu:', error)
+    console.error('Ã‡Ä±kÄ±ÅŸ yapÄ±lÄ±rken bir hata oluÅŸtu:', error)
   }
 }
 
-// Kullanıcı menüsü işlemleri
+// KullanÄ±cÄ± menÃ¼sÃ¼ iÅŸlemleri
 const handleProfileClick = () => {
   showUserMenu.value = false
   router.push('/profile')
@@ -239,7 +245,7 @@ const handleSettingsClick = () => {
   router.push('/settings')
 }
 
-// Dışarı tıklandığında menüyü kapat
+// DÄ±ÅŸarÄ± tÄ±klandÄ±ÄŸÄ±nda menÃ¼yÃ¼ kapat
 onMounted(async () => {
   // Restore sidebar state from localStorage or close on mobile
   if (isMobile.value) {
