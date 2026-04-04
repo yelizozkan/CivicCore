@@ -116,16 +116,16 @@
     <div class="form-panel">
       <div class="form-inner">
 
-        <!-- Brand -->
-        <div class="brand">
-          <div class="brand-icon">
-            <svg width="24" height="24" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
-            </svg>
-          </div>
+        <!-- BUSADER Logo -->
+        <div class="flex items-center gap-3 mb-8">
+          <img 
+            src="/images/busaderlogo.png" 
+            alt="BUSADER" 
+            class="w-14 h-14 object-contain"
+          />
           <div>
-            <div class="brand-name">BUSADER</div>
-            <div class="brand-sub">Federasyonu</div>
+            <h1 class="text-2xl font-bold text-slate-800">BUSADER</h1>
+            <p class="text-sm text-purple-600">Federasyonu</p>
           </div>
         </div>
 
@@ -140,11 +140,27 @@
           v-if="route.query.expired"
           type="warning"
           variant="tonal"
-          density="compact"
           closable
-          class="mb-5 rounded-xl"
+          class="mb-6 rounded-xl"
         >
-          Oturumunuz sona erdi. Lütfen tekrar giriş yapın.
+          <template #title>
+            <span class="text-sm font-medium">Oturum Süresi Doldu</span>
+          </template>
+          <span class="text-sm">Oturumunuz sona erdi. Lütfen tekrar giriş yapın.</span>
+        </v-alert>
+
+        <v-alert
+          v-if="errorMessage"
+          type="error"
+          variant="tonal"
+          closable
+          class="mb-6 rounded-xl"
+          @click:close="errorMessage = ''"
+        >
+          <template #title>
+            <span class="text-sm font-medium">Giriş Başarısız</span>
+          </template>
+          <span class="text-sm">{{ errorMessage }}</span>
         </v-alert>
 
         <!-- Form -->
@@ -233,6 +249,7 @@ const { validationRules } = useValidators()
 const loginForm = ref()
 const isFormValid = ref(false)
 const showPassword = ref(false)
+const errorMessage = ref('')
 
 const form = reactive<LoginRequest>({
   email: '', password: '', rememberMe: false, deviceId: '', deviceName: ''
@@ -241,6 +258,7 @@ const form = reactive<LoginRequest>({
 // ── Auth ──────────────────────────────────────────────
 const handleLogin = async () => {
   if (!isFormValid.value) return
+  errorMessage.value = ''
   try {
     if (form.rememberMe) {
       localStorage.setItem('rememberedEmail', form.email)
@@ -248,8 +266,17 @@ const handleLogin = async () => {
       localStorage.removeItem('rememberedEmail')
     }
     await auth.login(form)
-  } catch (error) {
+  } catch (error: any) {
     console.error('Login failed:', error)
+    if (error.response?.status === 401 || error.response?.status === 400 || error.statusCode === 401 || error.statusCode === 400) {
+      errorMessage.value = 'E-posta adresi veya şifre hatalı. Lütfen kontrol edip tekrar deneyin.'
+    } else if (error.data?.message) {
+      errorMessage.value = error.data.message
+    } else if (error.message) {
+      errorMessage.value = error.message
+    } else {
+      errorMessage.value = 'Giriş işlemi sırasında beklenmeyen bir hata oluştu.'
+    }
   }
 }
 

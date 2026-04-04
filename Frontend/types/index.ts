@@ -162,12 +162,13 @@ export enum PermissionType {
 
 // UI Types
 export interface NavigationItem {
-  title: string
-  icon: string
+  title?: string
+  icon?: string
   to?: string
   children?: NavigationItem[]
   permission?: string
   roles?: string[]
+  section?: string
 }
 
 export interface BreadcrumbItem {

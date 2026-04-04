@@ -1,52 +1,67 @@
   import type { NavigationItem } from '~/types'
 
   export const navigationItems: NavigationItem[] = [
+    { section: 'MENU' },
     {
       title: 'Dashboard',
-      icon: 'mdi-view-dashboard',
-      children: [
-        {
-           title: 'Dashboard',
-      icon: 'mdi-view-dashboard',
+      icon: 'mdi-view-dashboard-outline',
       to: '/dashboard',
-        }
-        
-      ]
+    },
+    {
+      title: 'Üyeler',
+      icon: 'mdi-account-group-outline',
+      to: '/memberships'
+    },
+    {
+      title: 'Ödemeler',
+      icon: 'mdi-cash-multiple',
+      to: '/payments'
+    },
+    {
+      title: 'Etkinlikler',
+      icon: 'mdi-calendar-outline',
+      to: '/events'
+    },
+    {
+      title: 'Belgeler',
+      icon: 'mdi-file-document-outline',
+      to: '/documents'
+    },
+    {
+      title: 'Raporlar',
+      icon: 'mdi-chart-bar',
+      to: '/reports'
     },
     
+    // Add existing dynamic routes too, but put them nicely under sections
+    // Or maybe since this is a UI prototype update we should just mix them. Let's put Users/Roles/Permissions under DESTEK or below it.
+    { section: 'YÖNETİM & DESTEK' },
     {
-      title: 'User Management',
-      icon: 'mdi-account-group',
-      children: [
-        {
-          title: 'Üyeler',
-          icon: 'mdi-card-account-details',
-          to: '/memberships'
-        },
-        {
-          title: 'Users',
-          icon: 'mdi-account-multiple',
-          to: '/users',
-          permission: 'Users.Read'
-        },
-        {
-          title: 'Roles',
-          icon: 'mdi-shield-account',
-          to: '/roles',
-          permission: 'Roles.Read'
-        },
-        {
-          title: 'Permissions',
-          icon: 'mdi-key',
-          to: '/permissions',
-          permission: 'Permissions.Read'
-        }
-      ]
+      title: 'Kullanıcılar',
+      icon: 'mdi-account-multiple-outline',
+      to: '/users',
+      permission: 'Users.Read'
     },
-    
     {
-      title: 'Settings',
-      icon: 'mdi-cog',
+      title: 'Roller',
+      icon: 'mdi-shield-account-outline',
+      to: '/roles',
+      permission: 'Roles.Read'
+    },
+    {
+      title: 'Yetkiler',
+      icon: 'mdi-key-outline',
+      to: '/permissions',
+      permission: 'Permissions.Read'
+    },
+    {
+      title: 'Yardım',
+      icon: 'mdi-help-circle-outline',
+      to: '/help',
+    },
+    {
+      title: 'Ayarlar',
+      icon: 'mdi-cog-outline',
       to: '/settings',
       roles: ['Admin', 'SuperAdmin']
     }
@@ -58,6 +73,9 @@
     hasRole: (role: string) => boolean
   ): NavigationItem[] => {
     return items.filter(item => {
+      // Keep section headers
+      if (item.section) return true
+
       // Check permission requirement
       if (item.permission && !hasPermission(item.permission)) {
         return false
@@ -77,4 +95,4 @@
 
       return true
     })
-  } 
+  }
