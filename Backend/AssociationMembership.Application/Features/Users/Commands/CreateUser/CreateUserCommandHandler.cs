@@ -52,7 +52,9 @@ namespace AssociationMembership.Application.Features.Users.Handlers
                 PasswordHash = passwordResult.Value,
                 PhoneNumber = request.PhoneNumber,
                 Status = request.Status,
+                TenantGroupId = request.TenantGroupId,
                 EmailConfirmed = false
+                
             };
 
             await _unitOfWork.Users.AddAsync(user);

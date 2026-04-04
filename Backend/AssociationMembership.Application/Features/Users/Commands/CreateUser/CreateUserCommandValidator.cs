@@ -7,6 +7,7 @@ namespace AssociationMembership.Application.Validators.Users
     {
         public CreateUserCommandValidator()
         {
+
             RuleFor(x => x.FirstName)
                 .NotEmpty().WithMessage("First name is required.")
                 .MaximumLength(50).WithMessage("First name cannot exceed 50 characters.");
@@ -33,6 +34,9 @@ namespace AssociationMembership.Application.Validators.Users
 
             RuleFor(x => x.Status)
                 .IsInEnum().WithMessage("Invalid user status.");
+
+            RuleFor(x => x.TenantGroupId)
+            .GreaterThan(0).WithMessage("TenantGroup girilmelidir.");
         }
     }
 } 

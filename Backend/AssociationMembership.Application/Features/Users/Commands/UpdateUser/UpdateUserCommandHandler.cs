@@ -47,6 +47,7 @@ namespace AssociationMembership.Application.Features.Users.Handlers
             user.PhoneNumber = request.PhoneNumber;
             user.Status = request.Status;
             user.ProfileImageUrl = request.ProfileImageUrl;
+            user.TenantGroupId = request.TenantGroupId;
 
             _unitOfWork.Users.Update(user);
             await _unitOfWork.SaveChangesAsync();

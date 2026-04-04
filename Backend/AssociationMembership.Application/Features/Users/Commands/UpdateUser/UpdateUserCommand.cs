@@ -17,5 +17,7 @@ namespace AssociationMembership.Application.Features.Users.Commands
         public UserStatus Status { get; set; }
         public string ProfileImageUrl { get; set; }
         public List<int> RoleIds { get; set; } = new List<int>();
+
+        public int TenantGroupId { get; set; }
     }
 } 

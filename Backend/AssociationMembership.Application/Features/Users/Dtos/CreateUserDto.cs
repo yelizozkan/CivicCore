@@ -13,5 +13,7 @@ namespace AssociationMembership.Application.DTOs
         public string PhoneNumber { get; set; }
         public UserStatus Status { get; set; } = UserStatus.Active;
         public List<int> RoleIds { get; set; } = new List<int>();
+
+        public int TenantGroupId { get; set; }
     }
 } 

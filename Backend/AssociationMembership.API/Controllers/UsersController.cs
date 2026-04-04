@@ -82,6 +82,7 @@ namespace AssociationMembership.API.Controllers
                 LastName = dto.LastName,
                 Email = dto.Email,
                 Password = dto.Password,
+                TenantGroupId = dto.TenantGroupId,
                 PhoneNumber = dto.PhoneNumber,
                 Status = dto.Status,
                 RoleIds = dto.RoleIds
@@ -117,6 +118,7 @@ namespace AssociationMembership.API.Controllers
                 LastName = dto.LastName,
                 Email = dto.Email,
                 PhoneNumber = dto.PhoneNumber,
+                TenantGroupId = dto.TenantGroupId,
                 Status = dto.Status,
                 ProfileImageUrl = dto.ProfileImageUrl,
                 RoleIds = dto.RoleIds

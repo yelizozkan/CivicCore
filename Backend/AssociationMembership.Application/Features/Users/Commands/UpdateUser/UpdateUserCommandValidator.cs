@@ -29,6 +29,9 @@ namespace AssociationMembership.Application.Validators.Users
 
             RuleFor(x => x.Status)
                 .IsInEnum().WithMessage("Invalid user status.");
+
+            RuleFor(x => x.TenantGroupId)
+                .GreaterThan(0).WithMessage("TenantGroupId must be greater than 0.");
         }
     }
 } 

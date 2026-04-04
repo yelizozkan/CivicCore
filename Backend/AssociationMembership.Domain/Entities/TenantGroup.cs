@@ -12,7 +12,7 @@ namespace AssociationMembership.Domain.Entities
         public int TenantId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string Slug { get; set; }
+        public string? Slug { get; set; }
 
 
         public Tenant Tenant { get; set; }

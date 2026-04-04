@@ -29,8 +29,12 @@
         <div v-else class="flex items-center gap-3">
           <img src="/images/busaderlogo.png" alt="BUSADER" class="w-12 h-12 object-contain" />
           <div class="flex flex-col mt-1">
-            <h1 class="font-bold text-slate-800 text-[21px] leading-tight">BUSADER</h1>
-            <p class="text-[12px] font-semibold text-purple-600 tracking-wider uppercase">Federasyonu</p>
+            <h1 class="font-bold text-slate-800 text-[17px] leading-tight">
+              {{ tenantGroup?.name || 'BUSADER' }}
+            </h1>
+            <p class="text-[11px] font-medium text-purple-600 tracking-wide">
+              Yönetim Paneli
+            </p>
           </div>
         </div>
         
@@ -189,6 +193,7 @@ const isMobile = computed(() => display.smAndDown.value)
 const isSidebarOpen = ref(true)
 const showUserMenu = ref(false)
 const authStore = useAuthStore()
+const tenantGroup = computed(() => authStore.getTenantGroup)
 const authUtils = useAuth() // <-- asıl yetki fonksiyonları burada
 const router = useRouter()
 
